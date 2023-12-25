@@ -1,7 +1,5 @@
-/*
- * XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
- * Licensed under GPLv3 - Refer to the LICENSE file for the complete text
- */
+// XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
+// Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #ifndef LOADING_H
 #define LOADING_H

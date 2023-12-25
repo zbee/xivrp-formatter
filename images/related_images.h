@@ -1,12 +1,5 @@
-// /*
-//  * XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
-//  * Licensed under GPLv3 - Refer to the LICENSE file for the complete text
-//  *
-
-/*
- * XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
- * Licensed under GPLv3 - Refer to the LICENSE file for the complete text
- */
+// XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
+// Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #ifndef FF_RP_FORMATTER_RELATED_IMAGES_H
 #define FF_RP_FORMATTER_RELATED_IMAGES_H
