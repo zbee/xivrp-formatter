@@ -1,0 +1,95 @@
+<!--
+XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
+
+THIS IS A TEMPLATE FILE, DO NOT PLACE CONTENT INTO THIS FILE.
+
+Feel free to customize it to your liking, it uses TailwindCSS as it is.
+It must have the authors, metadata, and messages tags in order to work.
+Feel free to remove the copyright at the bottom, leave the commented one above.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formatted writing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        body, html {
+            @apply bg-neutral-800;
+            @apply overflow-y-hidden overflow-x-hidden;
+        }
+
+        .page {
+            @apply py-20;
+            @apply w-screen h-screen overflow-y-scroll overflow-x-hidden;
+            @apply mx-auto text-neutral-50;
+            @apply grid gap-x-16 gap-y-10 grid-cols-5;
+            @apply scroll-smooth;
+            /*@apply snap-y snap-proximity;*/
+        }
+
+        #header {
+            @apply text-2xl text-neutral-100;
+            @apply font-bold text-center;
+            @apply col-span-3;
+        }
+
+        #header .small {
+            @apply text-xl text-neutral-300;
+        }
+
+        .message {
+            @apply col-span-3;
+            @apply snap-center;
+            @apply block;
+            @apply rounded-lg border-l-8 border-neutral-400;
+            @apply px-6;
+            @apply hover:border-blue-400;
+        }
+
+        .message .body {
+            @apply text-2xl text-neutral-50 text-justify;
+            @apply subpixel-antialiased;
+            @apply leading-10 tracking-wide;
+        }
+
+        .message .body span {
+            @apply font-bold;
+        }
+
+        .message .header {
+            @apply text-4xl text-neutral-200;
+        }
+
+        .message .footer {
+            @apply text-right text-sm text-neutral-400;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <div></div>
+    <div id="header">
+        {{ authors }}
+        <div class="small">
+            {{ metadata }}
+        </div>
+    </div>
+    <div></div>
+
+    {{ messages }}
+
+    <div class="text-center col-span-5">
+        Generated with
+        <a href="https://github.com/zbee/XIVRP-Formatter" class="text-sky-600" target="_blank">
+            XIVRP-Formatter
+        </a>
+        by Ethan Henderson
+    </div>
+
+</div>
+
+</body>
+</html>
