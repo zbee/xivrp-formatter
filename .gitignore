@@ -1,0 +1,5 @@
+.idea/
+examples/
+cmake-build*/
+*.png
+formatted_writing.html
