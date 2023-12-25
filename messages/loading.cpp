@@ -4,8 +4,8 @@
  */
 
 #include "loading.h"
-#include "../date.h"
-#include "../json.hpp"
+#include "../includes/date.h"
+#include "../includes/json.hpp"
 #include <chrono>
 #include <fstream>
 #include <iostream>

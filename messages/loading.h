@@ -6,8 +6,8 @@
 #ifndef LOADING_H
 #define LOADING_H
 
-#include "../json.hpp"
-#include "../settings.h"
+#include "../includes/json.hpp"
+#include "../settings/settings.h"
 #include "message.h"
 #include "messages.h"
 #include <list>

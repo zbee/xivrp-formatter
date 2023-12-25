@@ -5,13 +5,13 @@
 
 #include <iostream>
 
-#include "includes/settings.h"
+#include "settings/settings.h"
 
-#include "includes/messages/loading.h"
+#include "messages/loading.h"
 
-#include "includes/messages/messages.h"
+#include "messages/messages.h"
 
-#include "includes/templating.h"
+#include "templating/templating.h"
 
 using messages::load;
 using settings::loader;

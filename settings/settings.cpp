@@ -4,7 +4,7 @@
  */
 
 #include "settings.h"
-#include "json.hpp"
+#include "../includes/json.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
