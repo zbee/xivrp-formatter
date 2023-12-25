@@ -24,12 +24,15 @@ private:
   std::string full_path;
   std::string file_name;
 
-  // Regex to find the timestamp that gshade and reshade use
-  std::regex timestamp_regex =
-      std::regex(R"(\d{4}).(\d{2}).(\d{2})..?(\d{1,2}).(\d{1,2}).(\d{2})");
+  // Regex to find the timestamps that gshade, reshade, and the output of this
+  // program use
+  std::regex timestamp_regex = std::regex(
+      R"((\d{4}).(\d{1,2}).(\d{1,2})..?.?(\d{1,2}).(\d{1,2})[^.]?(\d{2})?)");
 
   // Timestamp of the image from the file name
   std::chrono::system_clock::time_point timestamp;
+  // Timestamp of the image from the file creation time
+  std::chrono::system_clock::time_point creation_time;
 
   // The base64 encoded image
   std::string encoded_image;
@@ -47,7 +50,9 @@ private:
 
 struct structured_related_images {
 public:
-  structured_related_images();
+  explicit structured_related_images(std::list<related_image> images);
+
+  structured_related_images() = default;
 
   std::list<related_image> images;
 };
@@ -61,6 +66,12 @@ public:
 
   structured_related_images images;
 
+  int related_images_found;
+  int images_assigned_manually;
+  int images_assigned_by_timestamp;
+  int images_assigned_by_creation_time;
+  int images_pushed_down;
+
 private:
   // Derived path to the log file
   std::string log_folder;
@@ -73,8 +84,8 @@ private:
 
   // Method to relate the images to the messages based on timestamps in the
   // image name
-  void relate_images(std::list<std::string> images,
-                     messages::structure messages);
+  std::list<int> relate_images(std::list<std::string> images,
+                               messages::structure messages);
 };
 
 } // namespace related_images

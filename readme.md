@@ -68,7 +68,6 @@ The following log types are planned for future support:
 - [Chat 2](https://git.anna.lgbt/anna/ChatTwo/src/branch/main/ChatTwo) database
 - [XIVLogger](https://github.com/cadaeix/XIVLogger) logs
 - Images with `COVER` in their name to be displayed more prominently in some way
-- BMP and JPG Images (other output formats from reshade)
 
 ## Building
 
@@ -104,4 +103,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - [nlohman's JSON library](https://github.com/nlohmann/json)
 - [HowardHinnant's date library](https://github.com/HowardHinnant/date)
 - [Tomáš Andrle's templating library](https://www.catnapgames.com/2013/04/09/nltemplate-html-template-library-for-c/)
-- [heifner's base64 library](https://github.com/heifner/base64)
+- [nsssayom's png to base64webp library](https://github.com/nsssayom/png-base64-webp)

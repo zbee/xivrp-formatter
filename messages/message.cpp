@@ -89,7 +89,9 @@ int messages::message::count_words(const std::string &str) {
 
 void messages::message::check_for_continuation() {
   // TODO: swap this to list of regexes, so I don't have to hardcode message
-  // lengths
+  //  lengths
+  // R"(c[ou]nti?n?u?e?[ds]?.?.?.?.?.?$)" for cont./continued
+  // R"( ?\( ?\d+ ?\/ ?[\?\d]+ ?\) ?$)" for (#/#)
 
   // Check for marks at the end of the message suggesting it is continued
   std::list<std::string> continued_marks = {

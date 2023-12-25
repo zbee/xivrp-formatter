@@ -9,6 +9,7 @@
 
 #include "messages/messages.h"
 
+#include "images/related_images.h"
 #include "templating/templating.h"
 
 using messages::load;
@@ -60,12 +61,13 @@ int main() {
     std::cout << "...Removed " << count << " messages." << std::endl;
   }
 
-  // messages.debug_print();
+  if (user.settings.debug)
+    messages.debug_print();
 
   // Combine messages that are continuations of others if requested
   if (user.settings.combine_messages) {
     std::cout << std::endl << "Combining messages..." << std::endl;
-    count = messages.combine(false);
+    count = messages.combine(user.settings.debug);
     std::cout << "...Combined " << count << " messages." << std::endl;
   }
 
@@ -75,6 +77,23 @@ int main() {
     count =
         messages.highlight_emphatics(user.settings.emphatic_highlight_color);
     std::cout << "...Highlighted " << count << " messages." << std::endl;
+  }
+
+  // Find images, and relate them to messages if requested
+  if (user.settings.find_related_images) {
+    std::cout << std::endl << "Finding related images..." << std::endl;
+    auto related =
+        related_images::related_images(user.settings.log_file_path, messages);
+    std::cout << "...Found " << related.related_images_found << " images."
+              << std::endl;
+    std::cout << "......" << related.images_assigned_manually
+              << " manually related." << std::endl;
+    std::cout << "......" << related.images_assigned_by_timestamp
+              << " related by filename time." << std::endl;
+    std::cout << "......" << related.images_assigned_by_creation_time
+              << " related by creation time." << std::endl;
+    std::cout << "..." << related.images_pushed_down
+              << " were pushed down, to unrelated messages." << std::endl;
   }
 
   // Format the messages

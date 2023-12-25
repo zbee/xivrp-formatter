@@ -9,19 +9,28 @@
 namespace settings {
 struct structure {
   // The message log to use
-  std::string log_file_path{"../examples/ChatLogs.json"};
+  std::string log_file_path{"../examples/erp.json"};
   // The template file to use
   std::string template_file_path{"../template.html"};
   // The file to output to
   std::string output_file_path{"../formatted_writing.html"};
+
   // Whether OOC messages should be removed
   bool remove_out_of_character{true};
+
   // Whether ~emphatics~ should be highlighted
   bool highlight_emphatics{true};
-  // Whether continued messages should be combined
-  bool combine_messages{true};
   // The color that emphatics should be highlighted with
   std::string emphatic_highlight_color{"#DD9FC1"};
+
+  // Whether continued messages should be combined
+  bool combine_messages{true};
+
+  // Whether related images should be checked for, and inserted
+  bool find_related_images{true};
+
+  // Whether the program should print debug information
+  bool debug{false};
 };
 
 class loader {
