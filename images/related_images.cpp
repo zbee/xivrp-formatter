@@ -65,7 +65,7 @@ related_images::convertDateTimeString(const std::string &dateTimeString) {
 int related_images::get_message_by_time(
     std::chrono::system_clock::time_point time,
     const messages::structure &messages) {
-  int last_message_id;
+  int last_message_id = -1;
 
   // Iterate over each message, returning the last message's ID once a message
   // is beyond the given time
@@ -88,12 +88,14 @@ related_images::relate_images(std::list<std::string> images,
   std::chrono::system_clock::time_point timePoint;
 
   bool time_from_filename;
+  bool timestampFound;
 
   for (const auto &image : images) {
     this->related_images_found++;
 
     //<editor-fold desc="File Metadata">
     std::smatch match;
+    timestampFound = false;
 
     // Get the file name
     std::filesystem::path image_path(image);
@@ -102,22 +104,34 @@ related_images::relate_images(std::list<std::string> images,
     // Get the timestamp from the file name
     if (std::regex_search(file_name, match, this->timestamp_regex)) {
       // Build the date time string in one usable format
-      dateTimeString = match[0].str() + "-" + match[1].str() + "-" +
-                       match[2].str() + "T" + match[3].str() + ":" +
-                       match[4].str();
-      // Seconds are optional
+      dateTimeString = match[1].str() + "-" + match[2].str() + "-" +
+                       match[3].str() + "T" + match[4].str() + ":" +
+                       match[5].str();
+      // Seconds are optional in the timestamp but not for the conversion
       if (match.size() > 5)
-        dateTimeString += ":" + match[5].str();
+        dateTimeString += ":" + match[6].str();
+      else
+        dateTimeString += ":00";
+      // Add "the timezone"
+      dateTimeString += "-00:00";
 
-      // Save the time point an} how we got it
+      // Convert the formed timestamp
       timePoint = related_images::convertDateTimeString(dateTimeString);
-      time_from_filename = true;
 
-      // Remove the matched regex from the string
-      file_name = std::regex_replace(file_name, this->timestamp_regex, "");
+      // Check if the timestamp is valid
+      std::time_t tt = std::chrono::system_clock::to_time_t(timePoint);
+      std::tm *tm = std::localtime(&tt);
+      if (tm->tm_year != 70) { // Checking if the year changed from default 1970
+        // Save the time point and how we got it
+        timestampFound = true;
+        time_from_filename = true;
+        // Remove the matched regex from the string
+        file_name = std::regex_replace(file_name, this->timestamp_regex, "");
+      }
     }
+
     // Get the time point from the file creation date
-    else {
+    if (!timestampFound) {
       // Get the file creation time
       auto fileTime = std::filesystem::last_write_time(image_path);
       // Save the time point and how we got it
@@ -171,13 +185,6 @@ related_images::relate_images(std::list<std::string> images,
     }
     // If the image is related to a message by time
     else {
-      // Count the image as assigned by time
-      if (time_from_filename) {
-        this->images_assigned_by_timestamp++;
-      } else {
-        this->images_assigned_by_creation_time++;
-      }
-
       // Get the message ID
       int message_id = this->get_message_by_time(timePoint, messages);
 
@@ -189,8 +196,18 @@ related_images::relate_images(std::list<std::string> images,
                         message_ids_with_images.end(),
                         message.id) == message_ids_with_images.end()) {
             message_id = message.id;
+            // Count the image as assigned randomly
+            this->images_assigned_randomly++;
             break;
           }
+      }
+      // Count the image as assigned by time
+      else {
+        if (time_from_filename) {
+          this->images_assigned_by_timestamp++;
+        } else {
+          this->images_assigned_by_creation_time++;
+        }
       }
 
       // Make sure it is one image per message
