@@ -2,6 +2,7 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include <iostream>
+#include <windows.h>
 
 #include "settings/settings.h"
 
@@ -116,6 +117,12 @@ int main() {
   std::cout << std::endl << "Done!" << std::endl;
   std::cout << "Output file written to " << user.settings.output_file_path
             << std::endl;
+
+  std::filesystem::path absolute_path =
+      std::filesystem::absolute(user.settings.output_file_path);
+  std::string url = "file:///" + absolute_path.string();
+
+  ShellExecute(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 
   return 0;
 }
