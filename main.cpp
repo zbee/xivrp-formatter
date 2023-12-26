@@ -79,10 +79,12 @@ int main() {
     std::cout << "...Highlighted " << count << " messages." << std::endl;
   }
 
+  related_images::related_images related;
+
   // Find images, and relate them to messages if requested
   if (user.settings.find_related_images) {
     std::cout << std::endl << "Finding related images..." << std::endl;
-    auto related =
+    related =
         related_images::related_images(user.settings.log_file_path, messages);
     std::cout << "...Found " << related.related_images_found << " images."
               << std::endl;
@@ -97,8 +99,12 @@ int main() {
   }
 
   // Format the messages
+  std::map<std::string, std::string> formatted_messages;
   std::cout << std::endl << "Formatting messages..." << std::endl;
-  auto formatted_messages = messages.format();
+  if (user.settings.find_related_images)
+    formatted_messages = messages.format(related.images);
+  else
+    formatted_messages = messages.format();
 
   // Fill the template with the messages
   std::cout << "Filling template..." << std::endl;

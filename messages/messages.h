@@ -4,6 +4,7 @@
 #ifndef CAPSTONE_LION_MESSAGES_H
 #define CAPSTONE_LION_MESSAGES_H
 
+#include "../images/related_images.h"
 #include "message.h"
 #include <chrono>
 #include <list>
@@ -47,13 +48,17 @@ public:
   // Method to format the messages into HTML
   std::map<std::string, std::string> format();
 
+  // Method to format the messages into HTML, with related images
+  std::map<std::string, std::string>
+  format(related_images::structured_related_images images);
+
   // Method to format the messages out into a debug print
   void debug_print();
 
-private:
   // Array of messages
   std::list<messages::message> messages;
 
+private:
   // Actual time of the messages
   std::chrono::system_clock::time_point start_time;
   std::chrono::system_clock::time_point end_time;

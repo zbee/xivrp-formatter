@@ -263,6 +263,80 @@ std::map<std::string, std::string> messages::structure::format() {
   return template_ready_messages;
 }
 
+std::map<std::string, std::string>
+messages::structure::format(related_images::structured_related_images images) {
+  std::map<std::string, std::string> template_ready_messages;
+
+  //<editor-fold desc="Authors">
+  // Iterate over the messages and find each author
+  std::list<std::string> authors;
+  for (auto &message : this->messages)
+    if (std::find(authors.begin(), authors.end(), message.author) ==
+        authors.end())
+      authors.push_back(message.author);
+
+  // Format the authors into a string
+  std::string formatted_authors;
+  // 1 Author
+  if (authors.size() == 1)
+    formatted_authors = authors.front();
+  // 2 Authors
+  else if (authors.size() == 2)
+    formatted_authors = authors.front() + " and " + authors.back();
+  // 3+ Authors
+  else {
+    for (auto &author : authors)
+      formatted_authors += author + ", ";
+    formatted_authors =
+        formatted_authors.substr(0, formatted_authors.size() - 2);
+  }
+
+  template_ready_messages.insert(
+      std::pair<std::string, std::string>("authors", formatted_authors));
+  //</editor-fold>
+
+  //<editor-fold desc="Metadata">
+  // Get the total number of words in this log
+  int word_count = 0;
+  for (auto &message : this->messages)
+    word_count += message.message_length;
+
+  // Get the average read time, assuming 200 words per minute
+  int average_read_time = word_count / 200;
+
+  // Format the metadata into a string
+  std::string metadata = std::to_string(this->number_of_messages) +
+                         " messages, " + std::to_string(word_count) +
+                         " words, " + "~" + std::to_string(average_read_time) +
+                         "min read time<br>" + this->datetime;
+
+  template_ready_messages.insert(
+      std::pair<std::string, std::string>("metadata", metadata));
+  //</editor-fold>
+
+  //<editor-fold desc="Messages">
+  // Iterate over the messages, and format them
+  std::string formatted_messages;
+  for (auto &message : this->messages) {
+    formatted_messages += message.format();
+
+    // Iterate over the images, checking if one matches this message, if so
+    // format and add it
+    for (auto &image : images.images)
+      if (image.related_message_id == message.id)
+        formatted_messages += image.format();
+  }
+
+  template_ready_messages.insert(
+      std::pair<std::string, std::string>("messages", formatted_messages));
+  //</editor-fold>
+
+  std::cout << "..." << messages.size() << " messages formatted." << std::endl;
+
+  // Return the formatted messages
+  return template_ready_messages;
+}
+
 void messages::structure::set_time_data(
     std::chrono::system_clock::time_point start_time,
     std::chrono::system_clock::time_point end_time) {
@@ -284,7 +358,7 @@ void messages::structure::set_time_data(
 void messages::structure::debug_print() {
   for (auto &message : this->messages)
     std::cout << std::endl
-              << message.author << " - " << message.time_into_session
+              << message.author << " - " << message.into_session
               << "(ooc:" << (message.is_ooc ? "true" : "false")
               << ", has cont:" << (message.is_continued ? "true" : "false")
               << ", is cont:" << (message.is_continuation ? "true" : "false")

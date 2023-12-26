@@ -44,7 +44,8 @@ public:
 
   // Time of the message
   std::string datetime;
-  std::string time_into_session;
+  std::string into_session;
+  std::chrono::system_clock::time_point time;
 
   message(int id, std::string author, messages::message_body content,
           std::chrono::system_clock::time_point start_time,
@@ -55,10 +56,6 @@ public:
 
   // Method to format the message into HTML
   std::string format();
-
-  // Method to set the time data
-  std::string timestamp;
-  std::string into_session;
 
   // Metadata about the message
   bool is_continued = false;
@@ -80,13 +77,13 @@ private:
   void check_for_ooc();
 
   // Actual time of the messages
-  std::chrono::system_clock::time_point time;
   std::chrono::duration<double> elapsed_time;
 
   // Method to set the time data
   void set_time_data(std::chrono::system_clock::time_point start_time,
                      std::chrono::system_clock::time_point message_time);
 
+  // Methods to check if the string starts or ends with an array of strings
   static bool starts_with_any(const std::string &str,
                               const std::list<std::string> &arr);
   static bool ends_with_any(const std::string &str,
