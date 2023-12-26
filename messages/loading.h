@@ -46,16 +46,6 @@ private:
   static std::chrono::system_clock::time_point
   convertDateTimeString(const std::string &dateTimeString);
 
-  // Method to convert a time_point into a date/time string
-  static std::string
-  convertTimePoint(const std::chrono::system_clock::time_point &timePoint);
-
-  // Time, duration, and formatting of those values for the whole logo
-  void set_messages_time_data(messages::structure messages);
-
-  // Method to set the metadata for the messages
-  void set_messages_metadata(messages::structure messages);
-
   std::list<messages::message> get_messages();
 };
 
