@@ -4,8 +4,8 @@
 #ifndef CAPSTONE_LION_MESSAGES_H
 #define CAPSTONE_LION_MESSAGES_H
 
-#include "../images/related_images.h"
 #include "message.h"
+#include <any>
 #include <chrono>
 #include <list>
 #include <map>
@@ -49,8 +49,7 @@ public:
   std::map<std::string, std::string> format();
 
   // Method to format the messages into HTML, with related images
-  std::map<std::string, std::string>
-  format(related_images::structured_related_images images);
+  std::map<std::string, std::string> format(std::any structured_related_images);
 
   // Method to format the messages out into a debug print
   void debug_print();

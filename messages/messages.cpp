@@ -2,6 +2,7 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include "messages.h"
+#include "../images/related_images.h"
 #include "../includes/date.h"
 #include <iostream>
 #include <utility>
@@ -264,7 +265,9 @@ std::map<std::string, std::string> messages::structure::format() {
 }
 
 std::map<std::string, std::string>
-messages::structure::format(related_images::structured_related_images images) {
+messages::structure::format(std::any structured_related_images) {
+  auto images = std::any_cast<related_images::structured_related_images>(
+      structured_related_images);
   std::map<std::string, std::string> template_ready_messages;
 
   //<editor-fold desc="Authors">

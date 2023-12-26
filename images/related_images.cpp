@@ -2,25 +2,28 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include "related_images.h"
+#include "../includes/base64.hpp"
 #include "../includes/date.h"
-#include "../includes/png-base64-webp.h"
 #include <filesystem>
+#include <fstream>
 #include <iostream>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace related_images {
 
 related_images::related_images(const std::string &log_file_location,
-                               messages::structure messages) {
+                               const messages::structure &messages) {
   // Find folder of the log file
   std::filesystem::path log_file_path(log_file_location);
-  this->log_folder = log_file_path.parent_path();
+  this->log_folder = log_file_path.parent_path().string();
 
   // Find images next to the log file
   auto image_paths = this->find_images(this->find_files());
 
   // Find messages that are related to the images
-  this->images = this->relate_images(image_paths, std::move(messages));
+  this->images = this->relate_images(image_paths, messages);
 }
 
 std::list<std::string> related_images::find_files() {
@@ -221,7 +224,8 @@ related_image::related_image(std::string file_path, int related_message_id) {
 
   // Get the full path
   std::filesystem::path image_path(file_path);
-  this->full_path = image_path.string();
+  std::filesystem::path absolute_path = std::filesystem::absolute(image_path);
+  this->full_path = absolute_path.string();
 
   // Get the file name
   this->file_name = image_path.filename().string();
@@ -232,25 +236,31 @@ related_image::related_image(std::string file_path, int related_message_id) {
 
 std::string related_image::format() {
   // Format the image into HTML
-  std::string html = "<img src=\"data:image/webp;base64," +
+  std::string html = "<img alt=\"" + this->file_name + ", " +
+                     std::to_string(this->related_message_id) +
+                     "\" src=\"data:image/png;"
+                     "base64," +
                      this->encoded_image + R"(" class="message_picture">)";
 
   // Clear the encoded image
   this->encoded_image.clear();
 
   // Return the HTML
-  return html;
+  return "<div></div>" + html + "<div></div>";
 }
 
 void related_image::encode_image() {
-  // Convert the full path into const chr*
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wshadow"
-  const char *full_path = this->full_path.c_str();
-#pragma clang diagnostic pop
+  // Open the file in binary mode
+  std::ifstream file(this->full_path, std::ios::binary);
 
-  // Encode the image into base64
-  this->encoded_image = encodePNGToBase64(full_path);
+  // Read the file into a string
+  std::string contents((std::istreambuf_iterator<char>(file)),
+                       std::istreambuf_iterator<char>());
+
+  // Encode the string into base64
+  this->encoded_image = code::base64_encode(
+      reinterpret_cast<const unsigned char *>(contents.c_str()),
+      contents.length());
 }
 
 } // namespace related_images

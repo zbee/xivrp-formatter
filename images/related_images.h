@@ -5,6 +5,7 @@
 #define FF_RP_FORMATTER_RELATED_IMAGES_H
 
 #include "../messages/messages.h"
+#include <list>
 #include <regex>
 #include <string>
 
@@ -45,17 +46,17 @@ public:
   // Constructor, loads and parses the related images log file, then calls the
   // metadata methods
   related_images(const std::string &log_file_location,
-                 messages::structure messages);
+                 const messages::structure &messages);
 
   related_images() = default;
 
   structured_related_images images;
 
-  int related_images_found;
-  int images_assigned_manually;
-  int images_assigned_by_timestamp;
-  int images_assigned_by_creation_time;
-  int images_pushed_down;
+  int related_images_found{0};
+  int images_assigned_manually{0};
+  int images_assigned_by_timestamp{0};
+  int images_assigned_by_creation_time{0};
+  int images_pushed_down{0};
 
 private:
   // Derived path to the log file

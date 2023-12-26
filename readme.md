@@ -75,7 +75,7 @@ I don't know, this is my first c++ project, after building the core of this for 
 
 Theoretically, it should just be good to go as is in c++20 with cmake.
 
-It was built in CLion with a Cygwin toolchain, so that will likely also work.
+It was built in CLion with a Cygwin toolchain, so that should work.
 
 ## License
 
@@ -103,4 +103,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - [nlohman's JSON library](https://github.com/nlohmann/json)
 - [HowardHinnant's date library](https://github.com/HowardHinnant/date)
 - [Tomáš Andrle's templating library](https://www.catnapgames.com/2013/04/09/nltemplate-html-template-library-for-c/)
-- [nsssayom's png to base64webp library](https://github.com/nsssayom/png-base64-webp)
+- [heifner's base64 library](https://github.com/heifner/base64)
