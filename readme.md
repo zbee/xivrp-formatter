@@ -21,21 +21,20 @@ All of these are optional and can be turned on or off as you like per-run
 
 (Roughly in order of priority)
 
+- Command line arguments to skip prompts and just run the program.
 - Find gaps in the session (e.g. writing session that took place over multiple days) and remove
   the gap from the log.
-- Injecting images with file naming, with the message ID it should accompany.
-- More detection for continued messages, e.g. simply the same person talking twice in a row.
-- Finding a roleplay session within a larger log.
-- Finding more than one roleplay session in a log, or combining multiple sessions in a larger
-  log into one.
 - Better mobile display.
 - Profile images that match character names in the provided log.
-- Command line arguments to skip prompts and just run the program.
+- Finding images automatically. (e.g. finding your XIV folder and checking for screenshots, or
+  finding your gshade/reshade settings and checking where screenshots are saved)
+- Finding a roleplay session within a larger log.
+- More detection for continued messages, e.g. simply the same person talking twice in a row.
+- Finding more than one roleplay session in a log, or combining multiple sessions in a larger
+  log into one.
 - Option to save settings to file, to load when used with command line arguments.
 - Finding log files automatically. (e.g. finding your XIVLauncher folder and checking where the
   plugins store their logs)
-- Finding images automatically. (e.g. finding your XIV folder and checking for screenshots, or
-  finding your gshade/reshade settings and checking where screenshots are saved)
 
 </details>
 
