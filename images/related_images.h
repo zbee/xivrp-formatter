@@ -56,6 +56,7 @@ public:
   int images_assigned_manually{0};
   int images_assigned_by_timestamp{0};
   int images_assigned_by_creation_time{0};
+  int images_assigned_randomly{0};
   int images_pushed_down{0};
 
 private:
@@ -79,7 +80,7 @@ private:
   // Regex to find the timestamps that gshade, reshade, and the output of this
   // program use
   std::regex timestamp_regex = std::regex(
-      R"((\d{4}).(\d{1,2}).(\d{1,2})..?.?(\d{1,2}).(\d{1,2})[^.]?(\d{2})?)");
+      R"((\d{4}).(\d{1,2}).(\d{1,2})[^\d]{1,}(\d{1,2}).(\d{1,2})[^.]?(\d{2})?)");
 
   // Method to relate the images to the messages based on timestamps in the
   // image name

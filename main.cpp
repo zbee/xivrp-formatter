@@ -53,7 +53,7 @@ int main() {
   // Save the loaded messages
   messages::structure messages = load.messages;
 
-  int count = 0;
+  int count;
 
   // Remove OOC messages if requested
   if (user.settings.remove_out_of_character) {
@@ -97,6 +97,8 @@ int main() {
               << " related by creation time." << std::endl;
     std::cout << "..." << related.images_pushed_down
               << " were pushed down, to unrelated messages." << std::endl;
+    std::cout << "......" << related.images_assigned_randomly
+              << " related randomly." << std::endl;
   }
 
   // Format the messages
@@ -118,11 +120,11 @@ int main() {
   std::cout << "Output file written to " << user.settings.output_file_path
             << std::endl;
 
+  // Open the output file
   std::filesystem::path absolute_path =
       std::filesystem::absolute(user.settings.output_file_path);
   std::string url = "file:///" + absolute_path.string();
-
-  ShellExecute(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+  ShellExecute(nullptr, "open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 
   return 0;
 }
