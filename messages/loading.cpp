@@ -100,7 +100,7 @@ messages::load::convertDateTimeString(const std::string &dateTimeString) {
   std::chrono::system_clock::time_point timePoint;
 
   // Parse the datetime string into a time point, based on its formatting
-  in >> date::parse("%FT%T%Ez", timePoint);
+  in >> date::parse("%FT%T", timePoint);
 
   return timePoint;
 }
