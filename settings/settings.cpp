@@ -11,9 +11,9 @@
 
 using json = nlohmann::json;
 
-settings::loader::loader() {
+settings::loader::loader(bool use_default_settings) {
   // Get the user's settings
-  this->settings = this->get_settings();
+  this->settings = this->get_settings(use_default_settings);
 
   // Verify the user's settings
   this->log_verified = this->verify_log_file();
@@ -163,7 +163,10 @@ bool settings::loader::verify_template_file() const {
   return false;
 }
 
-settings::structure settings::loader::get_settings() {
+settings::structure settings::loader::get_settings(bool use_default_settings) {
+  if (use_default_settings)
+    return settings;
+
   // TODO: implement a method each setting can call, that automatically shows
   //  the default and handles D or AD input
 

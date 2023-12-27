@@ -83,7 +83,7 @@ public:
   bool template_verified{false};
 
   // Constructor - retrieves the user's settings then verifies them
-  loader();
+  loader(bool use_default_settings = false);
 
   // Method to check a few other paths for the given file
   [[nodiscard]] static std::string get_real_path(std::string &path);
@@ -100,7 +100,7 @@ public:
 
 private:
   // Method to get the user's settings
-  structure get_settings();
+  structure get_settings(bool use_default_settings = false);
 
   // Method to verify the log file
   [[nodiscard]] bool verify_log_file() const;
