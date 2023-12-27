@@ -75,7 +75,9 @@ I don't know, this is my first c++ project, after building the core of this for 
 
 Theoretically, it should just be good to go as is in c++20 with cmake.
 
-It was built in CLion with a Cygwin toolchain, so that should work.
+It was built in CLion with a bundled Cygwin toolchain, releases with a bundled MinGW toolchain, and
+only tested on Windows 10. This, along with the `.idea/` folder -which includes the run and
+build configs- should produce a workable build.
 
 ## License
 
