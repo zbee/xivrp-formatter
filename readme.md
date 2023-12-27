@@ -62,9 +62,11 @@ The following log types are supported:
 
 The following log types are planned for future support:
 
-- [GobChat](https://github.com/MarbleBag/Gobchat) logs
+- Discord chat copy-paste (or pasted into a file)
 - [Chat 2](https://git.anna.lgbt/anna/ChatTwo/src/branch/main/ChatTwo) database
+- [GobChat](https://github.com/MarbleBag/Gobchat) logs
 - [XIVLogger](https://github.com/cadaeix/XIVLogger) logs
+- Finding sessions across multiple formats provided at once
 - Images with `COVER` in their name to be displayed more prominently in some way
 
 ## Building
