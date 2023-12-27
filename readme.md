@@ -104,3 +104,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - [HowardHinnant's date library](https://github.com/HowardHinnant/date)
 - [Tomáš Andrle's templating library](https://www.catnapgames.com/2013/04/09/nltemplate-html-template-library-for-c/)
 - [heifner's base64 library](https://github.com/heifner/base64)
+- [tailwindlabs' tailwindcss](https://github.com/tailwindlabs/tailwindcss)
