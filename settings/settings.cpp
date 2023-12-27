@@ -164,6 +164,9 @@ bool settings::loader::verify_template_file() const {
 }
 
 settings::structure settings::loader::get_settings() {
+  // TODO: implement a method each setting can call, that automatically shows
+  //  the default and handles D or AD input
+
   //<editor-fold desc="Message Log (and mass default)">
   // Inform of mass defaults
   std::cout << "(enter 'ad' to use all default values)" << std::endl;
@@ -198,6 +201,9 @@ settings::structure settings::loader::get_settings() {
     settings.log_file_path = settings::loader::get_real_path(setting_input);
   }
   //</editor-fold>
+
+  // TODO: implement log_sources
+  // TODO: implement settings::log_file_type
 
   //<editor-fold desc="Template File">
   setting_input = "";
@@ -347,6 +353,16 @@ settings::structure settings::loader::get_settings() {
     settings.combine_messages = setting_input == "y";
   }
   //</editor-fold>
+
+  // TODO: Implement combine_logs
+
+  // TODO: Implement find_related_images
+  // TODO: Implement related_images_location
+
+  // TODO: Implement want_timestamps
+  // TODO: Implement squash_time_gaps
+
+  // TODO: Implement debug
 
   return settings;
 }

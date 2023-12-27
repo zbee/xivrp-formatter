@@ -33,6 +33,8 @@ enum images_location {
   screenshots = 4, // Look for screenshots
 };
 
+// TODO: Add saving of these settings to a file, and an input to use that file
+
 struct structure {
   // The message log to use
   std::string log_file_path{"../examples/ChatLogs.json"};
@@ -54,10 +56,19 @@ struct structure {
   // Whether continued messages should be combined
   bool combine_messages{true};
 
+  // Whether multiple logs (including from other services) should be combined
+  // and de-duplicated
+  bool combine_logs{true};
+
   // Whether related images should be checked for, and inserted
   bool find_related_images{true};
   // Where to look for related images
   images_location related_images_location{images_location::smartLocate};
+
+  // Whether timestamps should be included in the output reading
+  bool want_timestamps{true};
+  // Whether gaps in timestamps should be filled
+  bool squash_time_gaps{true};
 
   // Whether the program should print debug information
   bool debug{false};
