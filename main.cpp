@@ -87,7 +87,8 @@ int main() {
     std::cout << std::endl << "Finding related images..." << std::endl;
     related =
         related_images::related_images(user.settings.log_file_path, messages);
-    std::cout << "...Found " << related.related_images_found << " images."
+    std::cout << "...Found " << related.related_images_found << " image"
+              << (related.related_images_found == 1 ? "" : "s") << "."
               << std::endl;
     std::cout << "......" << related.images_assigned_manually
               << " manually related." << std::endl;
