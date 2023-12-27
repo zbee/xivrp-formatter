@@ -56,21 +56,30 @@ void messages::message::highlight_emphatics(const std::string &color) {
 }
 
 std::string messages::message::format() {
-  return "<div></div>"
-         "<a class='message' href='#" +
-         std::to_string(this->id) + "' id='" + std::to_string(this->id) +
-         "'>"
-         "<div class='header'>" +
-         this->author +
-         "</div>"
-         "<div class='body'>" +
-         this->content.to_html() +
-         "</div>"
-         "<div class='footer'>" +
-         this->datetime + " (" + this->into_session + " in)" +
-         "</div>"
-         "</a>"
-         "<div></div>\n";
+  std::string html = "<div></div>"
+                     "<a class='message' href='#" +
+                     std::to_string(this->id) + "' id='" +
+                     std::to_string(this->id) +
+                     "'>"
+                     "<div class='header'>" +
+                     this->author +
+                     "</div>"
+                     "<div class='body'>" +
+                     this->content.to_html() +
+                     "</div>"
+                     "<div class='footer'>" +
+                     this->datetime + " (" + this->into_session + " in)" +
+                     "</div>"
+                     "</a>"
+                     "<div></div>\n";
+
+  if ("gap" != "gap")
+    html += "<div></div><div class=\"message_gap_notice\">"
+            "Gap of 17:26"
+            " found. Adjusting all time-in figures hereafter."
+            "</div><div></div>\n";
+
+  return html;
 }
 
 int messages::message::count_words(const std::string &str) {

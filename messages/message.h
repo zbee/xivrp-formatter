@@ -62,6 +62,8 @@ public:
   bool is_continuation = false;
   bool has_emphatics = false;
   bool is_ooc = false;
+  bool has_gap_after = false;
+  int session_ID = 0;
 
   // Method to count the number of words in the message
   static int count_words(const std::string &str);
