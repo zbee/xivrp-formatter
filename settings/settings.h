@@ -12,7 +12,7 @@ enum log_type {
   smartFind = 0, // Automatically find logs to use;
                  // finding your XIVLauncher config, then finding your logs
                  // depending on configs present.
-                 // Then grabbing the most recent 4 logs from supported services
+                 // Then grabbing the most recent logs from supported services
 
   smart = 1,     // Automatically detect the log type from a nearby log
   chatscan = 2,  // ChatScanner log
