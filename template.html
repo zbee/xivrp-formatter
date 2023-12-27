@@ -11,7 +11,8 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Formatted writing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ authors }} Formatted</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
         body, html {
@@ -23,7 +24,7 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
             @apply py-20;
             @apply w-screen h-screen overflow-y-scroll overflow-x-hidden;
             @apply mx-auto text-neutral-50;
-            @apply grid gap-x-16 gap-y-10 grid-cols-5;
+            @apply grid gap-x-16 gap-y-16 grid-cols-3 2xl:grid-cols-5;
             @apply scroll-smooth;
             /*@apply snap-y snap-proximity;*/
         }
@@ -41,9 +42,9 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
         .message {
             @apply col-span-3;
             @apply snap-center;
-            @apply block;
+            @apply block bg-neutral-800/75;
             @apply rounded-lg border-l-8 border-neutral-400;
-            @apply px-6;
+            @apply px-6 mx-3.5 2xl:mx-0;
             @apply hover:border-blue-400;
         }
 
@@ -54,9 +55,12 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
 
         .message_picture {
             @apply col-span-3;
-            @apply block;
-            @apply rounded-lg;
+            @apply mx-3.5 2xl:mx-0;
+        }
+
+        .message_picture img {
             @apply w-full;
+            @apply rounded-3xl;
         }
 
         .message .body {
@@ -73,8 +77,16 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
             @apply text-4xl text-neutral-200;
         }
 
-        .message .footer {
+        .message > .footer {
             @apply text-right text-sm text-neutral-400;
+        }
+
+        .page > .footer {
+            @apply text-center col-span-3;
+        }
+
+        .page .footer a {
+            @apply text-sky-600;
         }
     </style>
 </head>
@@ -93,13 +105,15 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
 
     {{ messages }}
 
-    <div class="text-center col-span-5">
+    <div></div>
+    <div class="footer">
         Generated with
-        <a href="https://github.com/zbee/XIVRP-Formatter" class="text-sky-600" target="_blank">
+        <a href="https://github.com/zbee/XIVRP-Formatter" target="_blank">
             XIVRP-Formatter
         </a>
         by Ethan Henderson
     </div>
+    <div></div>
 
 </div>
 

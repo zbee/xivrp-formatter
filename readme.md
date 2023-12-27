@@ -17,6 +17,7 @@ All of these are optional and can be turned on or off as you like per-run
 - Combine messages that are continued, with various detections for this.
 - Embed images depending on when they were taken during the session.
 - Find gaps in sessions that spanned multiple sittings and remove them, for real writing lengths.
+- Great for reading on desktop or mobile.
 
 <details><summary style="cursor:pointer"><h3 style="display:inline">Planned Features</h3></summary>
 
@@ -26,7 +27,6 @@ All of these are optional and can be turned on or off as you like per-run
 - Finding sessions within a larger log.
 - Finding sessions across multiple formats provided at once
 - Images with `COVER` in their name to be displayed more prominently in some way
-- Better mobile display.
 - Profile images that match character names in the provided log.
 - Finding images automatically. (e.g. finding your XIV folder and checking for screenshots, or
   finding your gshade/reshade settings and checking where screenshots are saved)

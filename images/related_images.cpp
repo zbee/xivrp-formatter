@@ -253,11 +253,12 @@ related_image::related_image(std::string file_path, int related_message_id) {
 
 std::string related_image::format() {
   // Format the image into HTML
-  std::string html = "<img alt=\"" + this->file_name + ", " +
+  std::string html = R"(<div class="message_picture"><img alt=")" +
+                     this->file_name + ", " +
                      std::to_string(this->related_message_id) +
                      "\" src=\"data:image/png;"
                      "base64," +
-                     this->encoded_image + R"(" class="message_picture">)";
+                     this->encoded_image + "\"/ ></div>";
 
   // Clear the encoded image
   this->encoded_image.clear();

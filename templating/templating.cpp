@@ -52,6 +52,7 @@ void templating::templator::fill_template(const std::string &output_file) {
 
   // Fill all the tags in the template file
   this->fill_tag(AUTHORS_TAG, content[AUTHORS_DATA]);
+  this->fill_tag(AUTHORS_TAG, content[AUTHORS_DATA]);
   this->fill_tag(METADATA_TAG, content[METADATA_DATA]);
   this->fill_tag(MESSAGES_TAG, content[MESSAGES_DATA]);
 
