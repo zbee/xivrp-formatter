@@ -1,15 +1,15 @@
 // XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
-#ifndef CAPSTONE_LION_SETTINGS_H
-#define CAPSTONE_LION_SETTINGS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include <string>
 
 namespace settings {
 struct structure {
   // The message log to use
-  std::string log_file_path{"../examples/Chatlogs.json"};
+  std::string log_file_path{"../examples/ChatLogs.json"};
   // The template file to use
   std::string template_file_path{"../template.html"};
   // The file to output to
@@ -69,4 +69,4 @@ private:
 };
 } // namespace settings
 
-#endif // CAPSTONE_LION_SETTINGS_H
+#endif // SETTINGS_H

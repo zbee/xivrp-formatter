@@ -1,8 +1,8 @@
 // XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
-#ifndef CAPSTONE_LION_MESSAGE_H
-#define CAPSTONE_LION_MESSAGE_H
+#ifndef MESSAGE_H
+#define MESSAGE_H
 
 #include <chrono>
 #include <list>
@@ -92,4 +92,4 @@ private:
 
 } // namespace messages
 
-#endif // CAPSTONE_LION_MESSAGE_H
+#endif // MESSAGE_H

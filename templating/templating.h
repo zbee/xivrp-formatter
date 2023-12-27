@@ -1,10 +1,8 @@
-/*
- * XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
- * Licensed under GPLv3 - Refer to the LICENSE file for the complete text
- */
+// XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
+// Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
-#ifndef CAPSTONE_LION_TEMPLATING_H
-#define CAPSTONE_LION_TEMPLATING_H
+#ifndef TEMPLATING_H
+#define TEMPLATING_H
 
 #include <map>
 #include <string>
@@ -36,4 +34,4 @@ private:
 
 } // namespace templating
 
-#endif // CAPSTONE_LION_TEMPLATING_H
+#endif // TEMPLATING_H
