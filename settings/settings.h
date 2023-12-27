@@ -7,9 +7,22 @@
 #include <string>
 
 namespace settings {
+
+enum log_type {
+  smartFind, // Automatically find logs to use
+  smart,     // Automatically detect the log type from a nearby log
+  chatscan,  // ChatScanner log
+  discord,   // Discord log
+  chat2,     // Chat2 database
+  gobchat,   // GobChat log
+  xivlogger, // XIVLogger log
+};
+
 struct structure {
   // The message log to use
   std::string log_file_path{"../examples/ChatLogs.json"};
+  // The type of log file
+  log_type log_file_type{log_type::smartFind};
   // The template file to use
   std::string template_file_path{"../template.html"};
   // The file to output to
