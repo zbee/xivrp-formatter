@@ -16,14 +16,16 @@ All of these are optional and can be turned on or off as you like per-run
 - Highlight `~emphatic~ /text/ *used*` in the log.
 - Combine messages that are continued, with various detections for this.
 - Embed images depending on when they were taken during the session.
+- Find gaps in sessions that spanned multiple sittings and remove them, for real writing lengths.
 
 <details><summary style="cursor:pointer"><h3 style="display:inline">Planned Features</h3></summary>
 
 (Roughly in order of priority)
 
 - Command line arguments to skip prompts and just run the program.
-- Find gaps in the session (e.g. writing session that took place over multiple days) and remove
-  the gap from the log.
+- Finding sessions within a larger log.
+- Finding sessions across multiple formats provided at once
+- Images with `COVER` in their name to be displayed more prominently in some way
 - Better mobile display.
 - Profile images that match character names in the provided log.
 - Finding images automatically. (e.g. finding your XIV folder and checking for screenshots, or
@@ -66,8 +68,6 @@ The following log types are planned for future support:
 - [Chat 2](https://git.anna.lgbt/anna/ChatTwo/src/branch/main/ChatTwo) database
 - [GobChat](https://github.com/MarbleBag/Gobchat) logs
 - [XIVLogger](https://github.com/cadaeix/XIVLogger) logs
-- Finding sessions across multiple formats provided at once
-- Images with `COVER` in their name to be displayed more prominently in some way
 
 ## Building
 

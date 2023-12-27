@@ -20,6 +20,8 @@ add_executable(XIVRP-Formatter main.cpp
         messages/messages.h
         messages/message.cpp
         messages/message.h
+        messages/gaps.cpp
+        messages/gaps.h
 
         images/related_images.cpp
         images/related_images.h

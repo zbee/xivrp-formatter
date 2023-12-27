@@ -57,11 +57,13 @@ public:
   // Array of messages
   std::list<messages::message> messages;
 
+  // Duration of the messages
+  std::chrono::duration<double> elapsed_time;
+
 private:
   // Actual time of the messages
   std::chrono::system_clock::time_point start_time;
   std::chrono::system_clock::time_point end_time;
-  std::chrono::duration<double> elapsed_time;
 
   // Method to set the time data
   void set_time_data(std::chrono::system_clock::time_point start_time,

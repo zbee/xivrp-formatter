@@ -73,9 +73,11 @@ std::string messages::message::format() {
                      "</a>"
                      "<div></div>\n";
 
-  if ("gap" != "gap")
+  if (this->has_gap_after)
     html += "<div></div><div class=\"message_gap_notice\">"
-            "Gap of 17:26"
+            "Gap of " +
+            date::format("%R",
+                         floor<std::chrono::milliseconds>(this->gap_duration)) +
             " found. Adjusting all time-in figures hereafter."
             "</div><div></div>\n";
 

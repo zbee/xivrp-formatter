@@ -1,17 +1,15 @@
 // XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
+#include "images/related_images.h"
+#include "includes/date.h"
+#include "messages/gaps.h"
+#include "messages/loading.h"
+#include "messages/messages.h"
+#include "settings/settings.h"
+#include "templating/templating.h"
 #include <iostream>
 #include <windows.h>
-
-#include "settings/settings.h"
-
-#include "messages/loading.h"
-
-#include "messages/messages.h"
-
-#include "images/related_images.h"
-#include "templating/templating.h"
 
 using messages::load;
 using settings::loader;
@@ -80,9 +78,8 @@ int main() {
     std::cout << "...Highlighted " << count << " messages." << std::endl;
   }
 
-  related_images::related_images related;
-
   // Find images, and relate them to messages if requested
+  related_images::related_images related;
   if (user.settings.find_related_images) {
     std::cout << std::endl << "Finding related images..." << std::endl;
     related =
@@ -100,6 +97,27 @@ int main() {
               << " were pushed down, to unrelated messages." << std::endl;
     std::cout << "......" << related.images_assigned_randomly
               << " related randomly." << std::endl;
+  }
+
+  // Find and squash time gaps, if requested
+  messages::gaps gaps;
+  if (user.settings.squash_time_gaps) {
+    std::cout << std::endl << "Squashing time gaps..." << std::endl;
+    gaps = messages::gaps(messages);
+
+    std::cout << "...Average of "
+              << date::format(
+                     "%R", floor<std::chrono::milliseconds>(gaps.average_gap))
+              << " between messages." << std::endl;
+    std::cout << "...Squashed " << gaps.number_of_gaps_found << " gap"
+              << (gaps.number_of_gaps_found == 1 ? "" : "s") << "."
+              << std::endl;
+    std::cout << "......Removing "
+              << date::format(
+                     "%R", floor<std::chrono::milliseconds>(gaps.gap_squashed))
+              << " from the session." << std::endl;
+
+    messages = gaps.messages;
   }
 
   // Format the messages

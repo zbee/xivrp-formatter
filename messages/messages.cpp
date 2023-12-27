@@ -310,10 +310,12 @@ messages::structure::format(std::any structured_related_images) {
   int average_read_time = word_count / 200;
 
   // Format the metadata into a string
-  std::string metadata = std::to_string(this->number_of_messages) +
-                         " messages, " + std::to_string(word_count) +
-                         " words, " + "~" + std::to_string(average_read_time) +
-                         "min read time<br>" + this->datetime;
+  std::string metadata =
+      std::to_string(this->number_of_messages) + " messages, " +
+      std::to_string(word_count) + " words " + "(" +
+      std::to_string(images.images.size()) + " images)<br>" + "~" +
+      std::to_string(average_read_time) + "min read time (" + this->duration +
+      " actual writing time)<br>" + this->datetime;
 
   template_ready_messages.insert(
       std::pair<std::string, std::string>("metadata", metadata));

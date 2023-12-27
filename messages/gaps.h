@@ -14,30 +14,45 @@ namespace messages {
 
 class gaps {
 public:
-  gaps(const messages::structure &messages);
+  // Constructor, loading the messages
+  explicit gaps(const messages::structure &messages);
   gaps() = default;
 
-  std::any messages;
+  // The number of gaps found
+  int number_of_gaps_found{0};
 
-  std::chrono::duration<double> average_gap;
+  // Total time of gaps removed
+  std::chrono::duration<double> gap_squashed{0};
+  // Average gap length
+  std::chrono::duration<double> average_gap{0};
 
+  // Storing the messages
+  messages::structure messages;
+
+private:
+  // message ID, gap length for gaps found
   std::list<std::pair<int, std::chrono::duration<double>>> gaps_found;
 
-  int number_of_gaps_found;
+  // Method to find the iterator for a message
+  bool find_message_iterator(const message &targetMessage,
+                             std::list<messages::message>::iterator &iterator);
 
+  // Method to find the gap from the previous message
   std::chrono::duration<double>
   find_gap_from_previous(std::list<messages::message>::iterator &message);
 
+  // Method to find the average gap length
   void find_average_gap();
 
+  // Method to loop through the messages and find the gaps
   void find_gaps();
 
-  std::chrono::duration<double>
-  find_what_gap_should_be(std::list<messages::message>::iterator &message);
-
-  void squash_gap(std::list<messages::message>::iterator &message);
-
+  // Method to assign the gaps to the messages
   void assign_gaps_to_messages();
+
+  // Method to remove the gap from the time-into from all messages after the
+  // gap
+  void squash_gap();
 };
 
 } // namespace messages

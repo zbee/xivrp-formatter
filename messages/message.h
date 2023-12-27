@@ -62,8 +62,14 @@ public:
   bool is_continuation = false;
   bool has_emphatics = false;
   bool is_ooc = false;
-  bool has_gap_after = false;
   int session_ID = 0;
+  bool has_gap_after = false;
+
+  // Duration of a gap after the message
+  std::chrono::duration<double> gap_duration{0};
+
+  // Actual time of the messages
+  std::chrono::duration<double> elapsed_time;
 
   // Method to count the number of words in the message
   static int count_words(const std::string &str);
@@ -77,9 +83,6 @@ private:
 
   // Method to check for OOC
   void check_for_ooc();
-
-  // Actual time of the messages
-  std::chrono::duration<double> elapsed_time;
 
   // Method to set the time data
   void set_time_data(std::chrono::system_clock::time_point start_time,
