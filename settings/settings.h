@@ -9,13 +9,24 @@
 namespace settings {
 
 enum log_type {
-  smartFind, // Automatically find logs to use
-  smart,     // Automatically detect the log type from a nearby log
-  chatscan,  // ChatScanner log
-  discord,   // Discord log
-  chat2,     // Chat2 database
-  gobchat,   // GobChat log
-  xivlogger, // XIVLogger log
+  smartFind = 0, // Automatically find logs to use;
+                 // finding your XIVLauncher config, then finding your logs
+                 // depending on configs present.
+                 // Then grabbing the most recent 4 logs from supported services
+
+  smart = 1,     // Automatically detect the log type from a nearby log
+  chatscan = 2,  // ChatScanner log
+  discord = 3,   // Discord log
+  chat2 = 4,     // Chat2 database
+  gobchat = 5,   // GobChat log
+  xivlogger = 6, // XIVLogger log
+};
+
+enum images_location {
+  smartLocate = 0, // Automatically find images to use;
+                   // attempting to find your reshade settings then your reshade
+                   // pictures, then the same with gshade, then FF screenshots
+  nearby = 1,      // Look for nearby images
 };
 
 struct structure {
@@ -41,6 +52,8 @@ struct structure {
 
   // Whether related images should be checked for, and inserted
   bool find_related_images{true};
+  // Where to look for related images
+  images_location related_images_location{images_location::smartLocate};
 
   // Whether the program should print debug information
   bool debug{false};
