@@ -26,7 +26,11 @@ enum images_location {
   smartLocate = 0, // Automatically find images to use;
                    // attempting to find your reshade settings then your reshade
                    // pictures, then the same with gshade, then FF screenshots
+
   nearby = 1,      // Look for nearby images
+  reshade = 2,     // Look for reshade images
+  gshade = 3,      // Look for gshade images
+  screenshots = 4, // Look for screenshots
 };
 
 struct structure {
