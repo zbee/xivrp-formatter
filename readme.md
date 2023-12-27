@@ -22,7 +22,7 @@ All of these are optional and can be turned on or off as you like per-run
 
 (Roughly in order of priority)
 
-- Command line arguments to skip prompts and just run the program.
+- Command line arguments to provide specific settings and otherwise use defaults.
 - Finding sessions within a larger log.
 - Finding sessions across multiple formats provided at once
 - Images with `COVER` in their name to be displayed more prominently in some way
