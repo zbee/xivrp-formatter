@@ -1,5 +1,9 @@
 # XIVRP-Formatter
 
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+
+<div style="grid-column: 1 / 4;padding: 10px;">
+
 This is designed to take your logs from your roleplaying sessions in FFXIV and format them up into
 a nice looking HTML page, that's easy to re-read, share with others, an embed pictures into.
 
@@ -10,6 +14,38 @@ picking your session out of the noise of a busy venue and even across multiple s
 different logs of different formats.
 
 Ready to get started? Check out the [instructions](#instructions) below.
+
+Need some help, or want to get more advanced? Check out the [wiki](/zbee/xivrp-formatter/wiki).
+
+Want to contribute? Check out the [contributing guide](/zbee/xivrp-formatter/wiki/Contributing)
+or the Sponsor section along the right.
+
+</div>
+
+<div style="grid-column: 4;padding: 10px;">
+
+<div style="background: rgba(255,255,255,0.1);">
+
+<div style="text-align: center;">TOC</div>
+
+- [Features](#features)
+    - [Core](#core)
+    - [Toggles](#toggles)
+    - [Planned Features](#planned-features-todo)
+- [Examples](#examples)
+- [Instructions](#instructions)
+    - [Quick-Start](#quick-start)
+- [Supports](#supports)
+    - [Planned Support](#planned-support)
+- [Building](#building)
+- [License](#license)
+- [Attribution](#attribution)
+
+</div>
+
+</div>
+
+</div>
 
 ## Features
 
