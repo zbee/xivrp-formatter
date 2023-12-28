@@ -155,7 +155,8 @@ private:
 
   // TODO: move this into the structure
   // TODO: change this to a raw string literal _json instead of a first-class
-  // type
+  //  type
+  // TODO: separate settings into standard and advanced settings
   //<editor-fold desc="Settings Requesting">
   json settings_requesting_guide = {
       {{"setting", "log_file_type"},

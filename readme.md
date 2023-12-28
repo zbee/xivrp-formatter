@@ -11,32 +11,45 @@ different logs of different formats.
 
 ## Features
 
-All of these are optional and can be turned on or off as you like per-run
+### Core
+
+These considerations and functionalities are baked into the program at its core for the best
+experience, just so you know whether it can be a game-changer for you.
+
+- Great for reading on desktop or mobile.
+- Faster than reading the log itself, and easier to read than how you originally wrote it.
+- Easy to share, with everything encoded into one file.
+- Lightweight, standalone, portable, and easy to use with defaults that don't even need adjusted
+  for a great output.
+- Saving of settings for optional use next-run, and command-line arguments for specific settings
+  or sweeping defaults, intelligent and automatic or manual and fine-grained settings, so you can
+  use the program however you like.
+
+### Toggles
+
+All of these are optional and can be turned on or off as you like per-run.
 
 - Remove Out-Of-Character messages from the log.
 - Highlight `~emphatic~ /text/ *used*` in the log.
 - Combine messages that are continued, with various detections for this.
 - Embed images depending on when they were taken during the session.
 - Find gaps in sessions that spanned multiple sittings and remove them, for real writing lengths.
-- Great for reading on desktop or mobile.
-- Saving of settings for optional use next-run, and command-line arguments for specific settings
-  and sweeping defaults, so you can use the program however you like.
+- Remove time data from the output for greater immersion.
 
 <details><summary style="cursor:pointer"><h3 style="display:inline">Planned Features (ToDo)</h3></summary>
 
 (Roughly in order of priority)
 
 - Designating cover images for the output, and styling it a variety of ways.
-- Finding roleplay sessions within a larger log.
-- Finding log files automatically. (e.g. finding your XIVLauncher folder and checking where the
-  plugins store their logs)
 - Profile images that match character names in the provided log.
+- Finding sessions based on provided character names.
 - Finding images automatically. (e.g. finding your XIV folder and checking for screenshots, or
   finding your gshade/reshade settings and checking where screenshots are saved)
+- Finding log files automatically. (e.g. finding your XIVLauncher folder and checking where the
+  plugins store their logs)
+- Finding roleplay sessions within a larger log.
 - Finding a roleplay session continued across multiple logs and combining them into one.
 - More detection for continued messages, e.g. simply the same person talking twice in a row.
-- Finding more than one roleplay session in a log, or combining multiple sessions in a larger
-  log into one.
 
 </details>
 
