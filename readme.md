@@ -11,9 +11,9 @@ different logs of different formats.
 
 Ready to get started? Check out the [instructions](#instructions) below.
 
-Need some help, or want to get more advanced? Check out the [wiki](/zbee/xivrp-formatter/wiki).
+Need some help, or want to get more advanced? Check out the [wiki](/wiki).
 
-Want to contribute? Check out the [contributing guide](/zbee/xivrp-formatter/wiki/Contributing)
+Want to contribute? Check out the [contributing guide](/wiki/Contributing)
 or the Sponsor section along the right.
 
 ## Features
