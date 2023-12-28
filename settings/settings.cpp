@@ -144,33 +144,6 @@ bool settings::loader::verify_log_file() const {
                                            ".json"))
     return false;
 
-  std::string line;
-  // Open the template file
-  std::ifstream infile(this->settings.log_file_path);
-
-  bool contains_bracket = false;
-  bool contains_colon = false;
-  bool contains_comma = false;
-  bool contains_double_quote = false;
-  bool contains_curly_bracket = false;
-  bool contains_chat_type = false;
-
-  // Check if lines contain {, [, ", :, and ,, and ChatType
-  while (std::getline(infile, line)) {
-    // Check if this line contains a bracket
-    contains_bracket |= line.find('[') != std::string::npos;
-    contains_colon |= line.find(':') != std::string::npos;
-    contains_comma |= line.find(',') != std::string::npos;
-    contains_double_quote |= line.find('"') != std::string::npos;
-    contains_curly_bracket |= line.find('{') != std::string::npos;
-    contains_chat_type |= line.find("ChatType") != std::string::npos;
-
-    // If all symbols are found, return true
-    if (contains_bracket && contains_curly_bracket && contains_double_quote &&
-        contains_colon && contains_comma && contains_chat_type)
-      return true;
-  }
-
   try {
     // Try to load the message log file, and parse it as json
     std::ifstream log_file(this->settings.log_file_path);
@@ -215,6 +188,10 @@ bool settings::loader::verify_template_file() const {
 
 settings::structure
 settings::loader::get_settings(const json &settings_from_arguments) {
+  // TODO: Break this apart into pieces in ask.h. Namely, so it can be used to
+  //  ask impromptu questions, like about discovered cover images, but also just
+  //  because it's 200 lines ...
+
   json working_settings;
 
   std::cout << "[enter 'AD' at any time to default all further settings]"
@@ -312,10 +289,9 @@ settings::loader::get_settings(const json &settings_from_arguments) {
         // If it's an is comparison
         else {
           // Cast the values to strings
-          std::string requirement_value =
-              requirement.value()["value"].get<std::string>();
+          bool requirement_value = requirement.value()["value"].get<int>() == 1;
           auto correlated_setting_value_string =
-              std::any_cast<std::string>(correlated_setting_value);
+              std::any_cast<bool>(correlated_setting_value);
 
           // Check the requirement according to the comparison type, skipping if
           // the requirement is not met
@@ -429,15 +405,19 @@ settings::structure::get_default(std::string setting) {
   std::string default_value;
   auto default_settings = settings::structure();
   auto saved_settings = default_settings.load_settings();
-  bool default_is_from_saved_settings = saved_settings.contains(setting);
+  bool default_is_from_saved_settings = false;
+
+  // Check if the setting is in the saved settings
+  for (auto &saved_setting : saved_settings.items())
+    if (saved_setting.key() == setting) {
+      default_is_from_saved_settings = true;
+      break;
+    }
 
   if (setting == "log_file_path")
     default_value = default_settings.log_file_path;
   else if (setting == "log_file_type")
-    default_value =
-        default_settings.log_file_type == log_type::smartFind
-            ? "0"
-            : "Unknown. Please request the developer update this entry";
+    default_value = std::to_string((int)default_settings.log_file_type);
   else if (setting == "template_file_path")
     default_value = default_settings.template_file_path;
   else if (setting == "output_file_path")
@@ -456,10 +436,7 @@ settings::structure::get_default(std::string setting) {
     default_value = default_settings.find_related_images ? "yes" : "no";
   else if (setting == "related_images_location")
     default_value =
-        default_settings.related_images_location == images_location::smartLocate
-            ? "0"
-            : "Unknown. Please request the developer update this entry (" +
-                  setting + ")";
+        std::to_string((int)default_settings.related_images_location);
   else if (setting == "want_timestamps")
     default_value = default_settings.want_timestamps ? "yes" : "no";
   else if (setting == "squash_time_gaps")
