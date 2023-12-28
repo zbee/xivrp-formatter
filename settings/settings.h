@@ -36,6 +36,7 @@ enum images_location {
   screenshots = 4, // Look for screenshots
 };
 
+// TODO: Move to ask
 //<editor-fold desc="Structure for asking for settings">
 
 enum compare {
@@ -56,9 +57,12 @@ enum answer { no = 0, yes = 1 };
 
 //</editor-fold>
 
+// TODO: Make this a map, or at least include a map to reduce where the list of
+//  settings has to be maintained
 struct structure {
   // The message log to use
   std::string log_file_path{"../examples/ChatLogs.json"};
+  // TODO: Pass in WorkingDirectory so this works in debug or from the binary
   // The type of log file
   log_type log_file_type{log_type::smartFind};
   // The template file to use
@@ -149,6 +153,9 @@ private:
   // Method to verify the template file
   [[nodiscard]] bool verify_template_file() const;
 
+  // TODO: move this into the structure
+  // TODO: change this to a raw string literal _json instead of a first-class
+  // type
   //<editor-fold desc="Settings Requesting">
   json settings_requesting_guide = {
       {{"setting", "log_file_type"},

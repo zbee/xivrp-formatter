@@ -70,6 +70,7 @@ std::tuple<bool, json> settings::loader::check_arguments(int arg_count,
   return std::make_tuple(all_defaults, settings_raw);
 }
 
+// TODO: move this and others to a static Common Utilities class
 std::string settings::loader::get_real_path(std::string &path) {
   // Check if the path is empty
   if (path.empty())
@@ -197,11 +198,13 @@ settings::loader::get_settings(const json &settings_from_arguments) {
   std::cout << "[enter 'AD' at any time to default all further settings]"
             << std::endl;
 
+  // TODO: move this to ask::ask and ask::ask_questions
   //  Loop over each setting in the guide
   bool use_all_defaults = false;
   for (auto &setting_raw : this->settings_requesting_guide.items()) {
     auto setting = setting_raw.value();
 
+    // TODO: move this to ask::load_question and a question structure
     // Get basic settings data
     bool ask = false;
     std::string question;
@@ -249,6 +252,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
       requirements = setting["requires"];
     }
 
+    // TODO: move this to ask::check_requirements
     // Check for requirements
     bool met_requirements = true;
     if (has_requirements) {
@@ -315,6 +319,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
     bool valid_answer = false;
     bool options_shown = false;
 
+    // TODO: move this to ask::form_question
     // Ask the user the setting's question, and suggest saved or default values
     if (!default_is_from_saved_settings)
       std::cout << std::endl
@@ -325,8 +330,11 @@ settings::loader::get_settings(const json &settings_from_arguments) {
                 << question << " [press enter for saved: " << default_value
                 << "]";
 
+    // TODO: move this to ask::ask_questions
     // Loop until the user gives a valid answer
     while (!valid_answer) {
+      // TODO: move this to ask::form_question and ask::load_options in
+      // ask::load_question
       //<editor-fold desc="Options Handling">
       // If the setting has options, print them
       if (has_options && !options_shown) {
@@ -351,6 +359,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
       // Ask the user for their answer
       std::getline(std::cin, answer);
 
+      // TODO: move this to ask::hanle_answer
       // Make a lowercase version of the answer
       auto answer_lower = answer;
       std::transform(answer_lower.begin(), answer_lower.end(),
@@ -400,6 +409,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
   return settings;
 }
 
+// TODO: reduce this with a map in settings::structure
 std::tuple<bool, std::string>
 settings::structure::get_default(std::string setting) {
   std::string default_value;
@@ -451,6 +461,7 @@ settings::structure::get_default(std::string setting) {
   return std::make_tuple(default_is_from_saved_settings, default_value);
 }
 
+// TODO: reduce this with a map in settings::structure
 std::any settings::structure::get_setting(std::string setting) {
   if (setting == "log_file_path")
     return this->log_file_path;
@@ -486,6 +497,7 @@ std::any settings::structure::get_setting(std::string setting) {
                                 "entry.");
 }
 
+// TODO: reduce this with a map in settings::structure
 void settings::structure::set_setting(std::string setting, std::any value) {
   if (setting == "log_file_path") {
     auto save_value = std::any_cast<std::string>(value);
