@@ -6,7 +6,8 @@ a nice looking HTML page, that's easy to re-read, share with others, an embed pi
 Besides formatting it into a simple, readability-focused, HTML page, it also works to make your
 sessions easier and more enjoyable to read by converting simple formatting into styled HTML,
 combining continued messages, removing unrelated messages, embedding images intelligently, and
-picking your session out of the noise of a busy venue.
+picking your session out of the noise of a busy venue and even across multiple sessions and even
+different logs of different formats.
 
 ## Features
 
@@ -71,13 +72,14 @@ The following log types are planned for future support:
 
 ## Building
 
-I don't know, this is my first c++ project, after building the core of this for a class project.
+I don't know, sorry; this is my first c++ project, after building the core of this for a class
+project after wanting a tool like this for some time and then continuing on with the project.
 
-Theoretically, it should just be good to go as is in c++20 with cmake.
+> Theoretically, it should just be good to go as-is in c++20 with cmake on Windows 10.
 
-It was built in CLion with CMake a bundled MinGW toolchain, and only tested on Windows 10. This,
-along with the `.idea/` folder - which includes the run and build configs - should produce a
-workable build.
+That said: It was built in CLion with CMake, an included MinGW toolchain, on Windows 10. This
+information, along with the `.idea/` folder - which includes the run and build configs - should
+hopefully be enough produce a workable build.
 
 ## License
 
