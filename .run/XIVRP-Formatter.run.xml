@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="XIVRP-Formatter" type="CMakeRunConfiguration"
-                   factoryName="Application" focusToolWindowBeforeRun="true"
-                   PROGRAM_PARAMS="--all-defaults" REDIRECT_INPUT="false" ELEVATE="false"
-                   USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true"
-                   PROJECT_NAME="XIVRP-Formatter" TARGET_NAME="XIVRP-Formatter" CONFIG_NAME="Debug"
+                   factoryName="Application" focusToolWindowBeforeRun="true" REDIRECT_INPUT="false"
+                   ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false"
+                   PASS_PARENT_ENVS_2="true" PROJECT_NAME="XIVRP-Formatter"
+                   TARGET_NAME="XIVRP-Formatter" CONFIG_NAME="Debug"
                    RUN_TARGET_PROJECT_NAME="XIVRP-Formatter" RUN_TARGET_NAME="XIVRP-Formatter">
         <method v="2">
             <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask"

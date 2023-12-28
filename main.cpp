@@ -22,19 +22,14 @@ using settings::structure;
 // 4 : template file could not open
 // 5 : contents not provided to templator
 // 6 : output file could not be created
-int main(int argc, char *argv[]) {
-  bool all_defaults = false;
-  for (int i = 0; i < argc; ++i)
-    if (std::string(argv[i]) == "--all-defaults")
-      all_defaults = true;
-
+int main(int arg_count, char *arguments[]) {
   std::cout << "XIVRP-Formatter  Copyright (C) 2024  Ethan Henderson"
             << std::endl
             << std::endl;
 
   //<editor-fold desc="Settings">
   // Get the user's settings
-  settings::loader user = settings::loader(all_defaults);
+  settings::loader user = settings::loader(arg_count, arguments);
 
   // Fail out if the settings were not suitable
   if (!user.log_verified) {
@@ -52,8 +47,8 @@ int main(int argc, char *argv[]) {
   //</editor-fold>
 
   // Check for the debug flag
-  for (int i = 0; i < argc; ++i)
-    if (std::string(argv[i]) == "--debug")
+  for (int i = 0; i < arg_count; ++i)
+    if (std::string(arguments[i]) == "--debug")
       user.settings.debug = true;
 
   std::cout << std::endl << "---" << std::endl << std::endl;

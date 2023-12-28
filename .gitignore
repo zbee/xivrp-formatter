@@ -2,3 +2,4 @@ examples/
 *build*/
 *.png
 formatted_writing.html
+settings.json

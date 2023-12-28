@@ -6,18 +6,68 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <list>
 #include <regex>
 #include <string>
 
 using json = nlohmann::json;
 
-settings::loader::loader(bool use_default_settings) {
+settings::loader::loader(int arg_count, char *arguments[]) {
+  // Load settings from arguments
+  bool use_default_settings = false;
+  json settings_from_arguments;
+  std::tie(use_default_settings, settings_from_arguments) =
+      this->check_arguments(arg_count, arguments);
+
   // Get the user's settings
-  this->settings = this->get_settings(use_default_settings);
+  if (!use_default_settings)
+    this->settings = this->get_settings(settings_from_arguments);
 
   // Verify the user's settings
   this->log_verified = this->verify_log_file();
   this->template_verified = this->verify_template_file();
+}
+
+std::tuple<bool, json> settings::loader::check_arguments(int arg_count,
+                                                         char **arguments) {
+  json settings_raw;
+
+  // Check for the flag to use all defaults
+  bool all_defaults = false;
+  for (int i = 0; i < arg_count; ++i)
+    if (std::string(arguments[i]) == "--all-defaults")
+      all_defaults = true;
+
+  // Check for the flag to use all defaults
+  for (int i = 0; i < arg_count; ++i)
+    if (std::string(arguments[i]) == "--debug")
+      settings_raw["debug"] = true;
+
+  // Check other arguments for settings
+  for (int i = 0; i < arg_count; ++i) {
+    auto argument = std::string(arguments[i]);
+
+    //<editor-fold desc="Skipping non-setting arguments">
+    // Skip if argument does not begin with double dashes
+    if (argument.substr(0, 2) != "--")
+      continue;
+
+    // Skip if argument does not have a value
+    if (argument.find('=') == std::string::npos)
+      continue;
+    //</editor-fold>
+
+    // Get the argument name
+    auto argument_name = argument.substr(2, argument.find('=') - 2);
+
+    // Get the argument value
+    auto argument_value = argument.substr(argument.find('=') + 1);
+
+    // Add the argument to the settings
+    settings_raw[argument_name] = argument_value;
+  }
+
+  return std::make_tuple(all_defaults, settings_raw);
 }
 
 std::string settings::loader::get_real_path(std::string &path) {
@@ -74,14 +124,14 @@ bool settings::loader::check_file_format(std::string file, std::string format) {
 }
 
 bool settings::loader::check_hex_color(std::string color) {
-  // Pattern for a hex color, 6 or 3 characters long
+  // Pattern for a hex_color color, 6 or 3 characters long
   std::regex hex_color_pattern{"^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"};
 
-  // Check that the color is a valid hex color string
+  // Check that the color is a valid hex_color color string
   bool matches = std::regex_match(color, hex_color_pattern);
   bool matches_with_hash = std::regex_match("#" + color, hex_color_pattern);
 
-  // Return true if it's a valid hex color, or is with a hash sign added
+  // Return true if it's a valid hex_color color, or is with a hash sign added
   return matches || matches_with_hash;
 }
 
@@ -163,209 +213,419 @@ bool settings::loader::verify_template_file() const {
   return false;
 }
 
-settings::structure settings::loader::get_settings(bool use_default_settings) {
-  if (use_default_settings)
-    return settings;
+settings::structure
+settings::loader::get_settings(const json &settings_from_arguments) {
+  json working_settings;
 
-  // TODO: implement a method each setting can call, that automatically shows
-  //  the default and handles D or AD input
+  std::cout << "[enter 'AD' at any time to default all further settings]"
+            << std::endl;
 
-  //<editor-fold desc="Message Log (and mass default)">
-  // Inform of mass defaults
-  std::cout << "(enter 'ad' to use all default values)" << std::endl;
-  std::string setting_input;
+  //  Loop over each setting in the guide
+  bool use_all_defaults = false;
+  for (auto &setting_raw : this->settings_requesting_guide.items()) {
+    auto setting = setting_raw.value();
 
-  // Keep asking until a valid answer is given
-  while (!this->check_file_exists(setting_input) ||
-         !this->check_file_format(setting_input, ".json")) {
+    // Get basic settings data
+    bool ask = false;
+    std::string question;
+    std::string setting_name = setting["setting"];
+    int wants = setting["wants"];
+    bool default_is_from_saved_settings;
+    std::string default_value;
+    std::tie(default_is_from_saved_settings, default_value) =
+        this->settings.get_default(setting_name);
 
-    if (!setting_input.empty()) {
-      // Inform of error, request again
-      std::cout << "!!! Invalid file path or file type, "
-                   "please try again: "
-                << std::endl
-                << ">";
-    } else {
-      // Request log file setting
-      std::cout << "Path to message log file you would like formatted: "
-                   "(enter 'd' for default: included example log)"
-                << std::endl
-                << ">";
+    // Check for inquiry data
+    if (setting.contains("ask")) {
+      question = setting["ask"];
+      ask = true;
     }
-    std::cin >> setting_input;
-  }
 
-  // Skip all inputs if all defaults is requested
-  if (setting_input == "ad")
-    return settings;
+    // Don't ask if not requested
+    if (!ask)
+      continue;
 
-  // Set log file setting, if not default
-  if (setting_input != "d") {
-    settings.log_file_path = settings::loader::get_real_path(setting_input);
-  }
-  //</editor-fold>
-
-  // TODO: implement log_sources
-  // TODO: implement settings::log_file_type
-
-  //<editor-fold desc="Template File">
-  setting_input = "";
-
-  // Keep asking until a valid answer is given
-  while (!this->check_file_exists(setting_input) ||
-         !this->check_file_format(setting_input, ".html")) {
-    if (!setting_input.empty()) {
-      // Inform of error, request again
-      std::cout << "!!! Invalid file path or file type, "
-                   "please try again: "
-                << std::endl
-                << ">";
-    } else {
-      std::cout << "Path to template file you would like used in formatting: "
-                   "(enter 'd' for default: included template file)"
-                << std::endl
-                << ">";
+    // Don't ask for settings that were provided in the arguments
+    if (settings_from_arguments.contains(setting_name)) {
+      this->settings.set_setting(setting_name,
+                                 settings_from_arguments[setting_name]);
+      continue;
     }
-    std::cin >> setting_input;
-  }
-  if (setting_input != "d") {
-    settings.template_file_path =
-        settings::loader::get_real_path(setting_input);
-  }
-  //</editor-fold>
 
-  //<editor-fold desc="Output File">
-  setting_input = "";
+    // Don't ask for settings if all defaults was turned on
+    if (use_all_defaults)
+      continue;
 
-  // Keep asking until a valid answer is given
-  while (!this->check_file_format(setting_input, ".html")) {
-    if (!setting_input.empty()) {
-      // Inform of error, request again
-      std::cout << "!!! Invalid file path or file type, "
-                   "please try again: "
-                << std::endl
-                << ">";
-    } else {
-      std::cout << "Path to output file: "
-                   "(enter 'd' for default: ./formatted_writing.html)"
-                << std::endl
-                << ">";
+    // Check for options data
+    bool has_options = false;
+    json options;
+    if (setting.contains("options")) {
+      has_options = true;
+      options = setting["options"];
     }
-    std::cin >> setting_input;
-  }
-  if (setting_input != "d") {
-    settings.output_file_path = setting_input;
-  }
-  //</editor-fold>
 
-  //<editor-fold desc="OOC Messages">
-  setting_input = "";
-
-  // Keep asking until a valid answer is given
-  while (setting_input != "y" && setting_input != "n" && setting_input != "d") {
-    if (!setting_input.empty()) {
-      // Inform of error, request again
-      std::cout << "!!! y (yes) or n (no) are the only valid answers, "
-                   "please try again: "
-                << std::endl
-                << ">";
-    } else {
-      std::cout << "Should out-of-character (OOC) messages be removed? (y/n) "
-                   "(enter 'd' for default: y)"
-                << std::endl
-                << ">";
+    // Check for requirements
+    bool has_requirements = false;
+    json requirements;
+    if (setting.contains("requires")) {
+      has_requirements = true;
+      requirements = setting["requires"];
     }
-    std::cin >> setting_input;
-  }
-  if (setting_input != "d") {
-    settings.remove_out_of_character = setting_input == "y";
-  }
-  //</editor-fold>
 
-  //<editor-fold desc="Highlight Emphatics">
-  setting_input = "";
+    // Check for requirements
+    bool met_requirements = true;
+    if (has_requirements) {
+      for (auto &requirement : requirements.items()) {
+        // Get the requirement's data
+        std::string requirement_name = requirement.value()["setting"];
+        int requirement_comparison = requirement.value()["comparison"];
 
-  // Keep asking until a valid answer is given
-  while (setting_input != "y" && setting_input != "n" && setting_input != "d") {
-    if (!setting_input.empty()) {
-      // Inform of error, request again
-      std::cout << "!!! y (yes) or n (no) are the only valid answers, "
-                   "please try again: "
-                << std::endl
-                << ">";
-    } else {
-      std::cout
-          << "Should ~emphatic~ and emphatic~ phrases be highlighted? (y/n) "
-             "(enter 'd' for default: y)"
-          << std::endl
-          << ">";
-    }
-    std::cin >> setting_input;
-  }
-  if (setting_input != "d") {
-    settings.highlight_emphatics = setting_input == "y";
-  }
-  //</editor-fold>
+        // Get the comparison type from enum
+        auto comparison = static_cast<compare>(requirement_comparison);
 
-  //<editor-fold desc="Highlight Color">
-  setting_input = "";
+        // Get the correlated setting value
+        std::any correlated_setting_value =
+            this->settings.get_setting(requirement_name);
 
-  if (settings.highlight_emphatics) {
-    // Keep asking until a valid answer is given
-    while (!this->check_hex_color(setting_input) && setting_input != "d") {
-      if (!setting_input.empty()) {
-        // Inform of error, request again
-        std::cout << "!!! Value was not a valid hexadecimal color code, "
-                     "please try again: "
-                  << std::endl
-                  << ">";
-      } else {
-        std::cout << "Color emphatics should be highlighted with: "
-                     "(enter 'd' for default: #DD9FC1)"
-                  << std::endl
-                  << ">";
+        // If it's an any comparison
+        if (requirement.value()["value"].is_array()) {
+          std::list<int> requirement_value =
+              requirement.value()["value"].get<std::list<int>>();
+          auto correlated_setting_value_string =
+              std::any_cast<int>(correlated_setting_value);
+
+          // Check the requirement according to the comparison type, skipping if
+          // the requirement is not met
+          if (comparison == compare::is_any) {
+            if (std::find(requirement_value.begin(), requirement_value.end(),
+                          correlated_setting_value_string) ==
+                requirement_value.end())
+              met_requirements = false;
+          } else if (comparison == compare::not_any) {
+            if (std::find(requirement_value.begin(), requirement_value.end(),
+                          correlated_setting_value_string) !=
+                requirement_value.end())
+              met_requirements = false;
+          }
+
+        }
+        // If it's an is comparison
+        else {
+          // Cast the values to strings
+          std::string requirement_value =
+              requirement.value()["value"].get<std::string>();
+          auto correlated_setting_value_string =
+              std::any_cast<std::string>(correlated_setting_value);
+
+          // Check the requirement according to the comparison type, skipping if
+          // the requirement is not met
+          if (comparison == compare::is) {
+            if (correlated_setting_value_string != requirement_value)
+              met_requirements = false;
+          } else if (comparison == compare::is_not) {
+            if (correlated_setting_value_string == requirement_value)
+              met_requirements = false;
+          }
+        }
       }
-      std::cin >> setting_input;
+
+      if (!met_requirements)
+        continue;
     }
-    if (setting_input != "d") {
-      settings.emphatic_highlight_color = setting_input;
+
+    // Get the user's answer, in a loop to verify their answer against what the
+    // setting wants
+    std::string answer;
+    bool valid_answer = false;
+    bool options_shown = false;
+
+    // Ask the user the setting's question, and suggest saved or default values
+    if (!default_is_from_saved_settings)
+      std::cout << std::endl
+                << question << " [press enter for default: " << default_value
+                << "]";
+    else
+      std::cout << std::endl
+                << question << " [press enter for saved: " << default_value
+                << "]";
+
+    // Loop until the user gives a valid answer
+    while (!valid_answer) {
+      //<editor-fold desc="Options Handling">
+      // If the setting has options, print them
+      if (has_options && !options_shown) {
+        std::cout << std::endl << "Options:" << std::endl;
+        // List Options
+        for (auto &option : options.items()) {
+          auto real_option = option.value();
+          std::cout << "  [" << real_option["value"] << "] for "
+                    << real_option["name"].get<std::string>() << std::endl;
+        }
+        options_shown = true;
+        std::cout << "> ";
+      } else {
+        if (wants == answer_types::yesno)
+          std::cout << std::endl
+                    << "  [y] for Yes" << std::endl
+                    << "  [n] for No" << std::endl;
+        std::cout << std::endl << "> ";
+      }
+      //</editor-fold>
+
+      // Ask the user for their answer
+      std::getline(std::cin, answer);
+
+      // Make a lowercase version of the answer
+      auto answer_lower = answer;
+      std::transform(answer_lower.begin(), answer_lower.end(),
+                     answer_lower.begin(), ::tolower);
+
+      // Check for defaults
+      if (answer.empty() or answer_lower == "ad") {
+        if (answer_lower == "ad")
+          use_all_defaults = true;
+        break;
+      }
+
+      // Check if the answer is valid
+      if (wants == answer_types::option) {
+        auto int_answer = std::stoi(answer);
+
+        // Check if the answer is a valid option
+        for (auto &option : options.items()) {
+          auto option_value = option.value()["value"].get<int>();
+          if (option_value == int_answer) {
+            valid_answer = true;
+            break;
+          }
+        }
+      } else if (wants == answer_types::path) {
+        // Check if the answer is a valid path
+        valid_answer = this->check_file_exists(answer);
+      } else if (wants == answer_types::hex_color) {
+        // Check if the answer is a valid hex_color color
+        valid_answer = this->check_hex_color(answer);
+      } else if (wants == answer_types::yesno) {
+        // Check if the answer is a valid boolean
+        valid_answer = answer_lower == "yes" || answer_lower == "y" ||
+                       answer_lower == "no" || answer_lower == "n";
+      }
+
+      // If the answer is not valid, print an error message
+      if (!valid_answer)
+        std::cout << std::endl << "Invalid answer. Please try again.";
+      else
+        this->settings.set_setting(setting_name, answer);
     }
   }
-  //</editor-fold>
 
-  //<editor-fold desc="Message Combining">
-  setting_input = "";
-
-  // Keep asking until a valid answer is given
-  while (setting_input != "y" && setting_input != "n" && setting_input != "d") {
-    if (!setting_input.empty()) {
-      // Inform of error, request again
-      std::cout << "!!! y (yes) or n (no) are the only valid answers, "
-                   "please try again: "
-                << std::endl
-                << ">";
-    } else {
-      std::cout << "Should messages be combined? (y/n) "
-                   "(enter 'd' for default: y)"
-                << std::endl
-                << ">";
-    }
-    std::cin >> setting_input;
-  }
-  if (setting_input != "d") {
-    settings.combine_messages = setting_input == "y";
-  }
-  //</editor-fold>
-
-  // TODO: Implement combine_logs
-
-  // TODO: Implement find_related_images
-  // TODO: Implement related_images_location
-
-  // TODO: Implement want_timestamps
-  // TODO: Implement squash_time_gaps
-
-  // TODO: Implement debug
+  settings.save_settings();
 
   return settings;
+}
+
+std::tuple<bool, std::string>
+settings::structure::get_default(std::string setting) {
+  std::string default_value;
+  auto default_settings = settings::structure();
+  auto saved_settings = default_settings.load_settings();
+  bool default_is_from_saved_settings = saved_settings.contains(setting);
+
+  if (setting == "log_file_path")
+    default_value = default_settings.log_file_path;
+  else if (setting == "log_file_type")
+    default_value =
+        default_settings.log_file_type == log_type::smartFind
+            ? "0"
+            : "Unknown. Please request the developer update this entry";
+  else if (setting == "template_file_path")
+    default_value = default_settings.template_file_path;
+  else if (setting == "output_file_path")
+    default_value = default_settings.output_file_path;
+  else if (setting == "remove_out_of_character")
+    default_value = default_settings.remove_out_of_character ? "yes" : "no";
+  else if (setting == "highlight_emphatics")
+    default_value = default_settings.highlight_emphatics ? "yes" : "no";
+  else if (setting == "emphatic_highlight_color")
+    default_value = default_settings.emphatic_highlight_color;
+  else if (setting == "combine_messages")
+    default_value = default_settings.combine_messages ? "yes" : "no";
+  else if (setting == "combine_logs")
+    default_value = default_settings.combine_logs ? "yes" : "no";
+  else if (setting == "find_related_images")
+    default_value = default_settings.find_related_images ? "yes" : "no";
+  else if (setting == "related_images_location")
+    default_value =
+        default_settings.related_images_location == images_location::smartLocate
+            ? "0"
+            : "Unknown. Please request the developer update this entry (" +
+                  setting + ")";
+  else if (setting == "want_timestamps")
+    default_value = default_settings.want_timestamps ? "yes" : "no";
+  else if (setting == "squash_time_gaps")
+    default_value = default_settings.squash_time_gaps ? "yes" : "no";
+  else if (setting == "debug")
+    default_value = default_settings.debug ? "yes" : "no";
+  else
+    throw std::invalid_argument("Unknown setting: " + setting +
+                                ". Please request the developer update this "
+                                "entry.");
+
+  return std::make_tuple(default_is_from_saved_settings, default_value);
+}
+
+std::any settings::structure::get_setting(std::string setting) {
+  if (setting == "log_file_path")
+    return this->log_file_path;
+  else if (setting == "log_file_type")
+    return (int)this->log_file_type;
+  else if (setting == "template_file_path")
+    return this->template_file_path;
+  else if (setting == "output_file_path")
+    return this->output_file_path;
+  else if (setting == "remove_out_of_character")
+    return this->remove_out_of_character;
+  else if (setting == "highlight_emphatics")
+    return this->highlight_emphatics;
+  else if (setting == "emphatic_highlight_color")
+    return this->emphatic_highlight_color;
+  else if (setting == "combine_messages")
+    return this->combine_messages;
+  else if (setting == "combine_logs")
+    return this->combine_logs;
+  else if (setting == "find_related_images")
+    return this->find_related_images;
+  else if (setting == "related_images_location")
+    return (int)this->related_images_location;
+  else if (setting == "want_timestamps")
+    return this->want_timestamps;
+  else if (setting == "squash_time_gaps")
+    return this->squash_time_gaps;
+  else if (setting == "debug")
+    return this->debug;
+  else
+    throw std::invalid_argument("Unknown setting: " + setting +
+                                ". Please request the developer update this "
+                                "entry.");
+}
+
+void settings::structure::set_setting(std::string setting, std::any value) {
+  if (setting == "log_file_path") {
+    auto save_value = std::any_cast<std::string>(value);
+    this->working_json[setting] = save_value;
+    this->log_file_path = save_value;
+  } else if (setting == "log_file_type") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto int_value = std::stoi(temp_value);
+    auto save_value = static_cast<log_type>(int_value);
+    this->working_json[setting] = save_value;
+    this->log_file_type = save_value;
+  } else if (setting == "template_file_path") {
+    auto save_value = std::any_cast<std::string>(value);
+    this->working_json[setting] = save_value;
+    this->template_file_path = save_value;
+  } else if (setting == "output_file_path") {
+    auto save_value = std::any_cast<std::string>(value);
+    this->working_json[setting] = save_value;
+    this->output_file_path = save_value;
+  } else if (setting == "remove_out_of_character") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->remove_out_of_character = save_value;
+  } else if (setting == "highlight_emphatics") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->highlight_emphatics = save_value;
+  } else if (setting == "emphatic_highlight_color") {
+    auto save_value = std::any_cast<std::string>(value);
+    this->working_json[setting] = save_value;
+    this->emphatic_highlight_color = save_value;
+  } else if (setting == "combine_messages") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->combine_messages = save_value;
+  } else if (setting == "combine_logs") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->combine_logs = save_value;
+  } else if (setting == "find_related_images") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->find_related_images = save_value;
+  } else if (setting == "related_images_location") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto int_value = std::stoi(temp_value);
+    auto save_value = static_cast<images_location>(int_value);
+    this->working_json[setting] = save_value;
+    this->related_images_location = save_value;
+  } else if (setting == "want_timestamps") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->want_timestamps = save_value;
+  } else if (setting == "squash_time_gaps") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->squash_time_gaps = save_value;
+  } else if (setting == "debug") {
+    auto temp_value = std::any_cast<std::string>(value);
+    auto save_value = temp_value == "yes" || temp_value == "y";
+    this->working_json[setting] = save_value;
+    this->debug = save_value;
+  } else
+    throw std::invalid_argument("Unknown setting: " + setting +
+                                ". Please request the developer update this "
+                                "entry.");
+}
+
+void settings::structure::save_settings() const {
+  // If the working json is empty, don't save
+  if (this->working_json.empty())
+    return;
+
+  // Write the working json to the save file
+  std::ofstream save_file("../settings.json");
+  save_file << this->working_json.dump();
+  save_file.close();
+}
+
+json settings::structure::load_settings() {
+  // If file doesn't exist, return an empty json
+  if (!std::filesystem::exists("../settings.json"))
+    return {};
+
+  // Open and parse the save file
+  std::ifstream save_file("../settings.json");
+  json saved_json;
+  save_file >> saved_json;
+  save_file.close();
+
+  // Set the settings from the save file
+  for (auto &setting : saved_json.items()) {
+    const auto &setting_name = setting.key();
+    auto setting_value = setting.value();
+
+    // Convert non-string values to strings how the set_settings method expects
+    // them to be as answers to setting questions
+    std::string real_setting_value;
+    std::string setting_value_type = setting_value.type_name();
+    if (setting_value_type == "number")
+      real_setting_value = std::to_string(setting_value.get<int>());
+    else if (setting_value_type == "boolean")
+      real_setting_value = setting_value.get<bool>() ? "yes" : "no";
+    else
+      real_setting_value = setting_value.get<std::string>();
+
+    this->set_setting(setting_name, real_setting_value);
+  }
+
+  // Return the loaded settings, so it can be checked against for whether a
+  // setting is default
+  return saved_json;
 }
