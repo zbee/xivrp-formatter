@@ -14,7 +14,7 @@ different logs of different formats.
 ### Core
 
 These considerations and functionalities are baked into the program at its core for the best
-experience, just so you know whether it can be a game-changer for you.
+experience.
 
 - Great for reading on desktop or mobile.
 - Faster than reading the log itself, and easier to read than how you originally wrote it.

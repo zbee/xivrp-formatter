@@ -27,6 +27,19 @@ Feel free to remove the copyright at the bottom, leave the commented one above.
             @apply grid gap-x-16 gap-y-16 grid-cols-3 2xl:grid-cols-5;
             @apply scroll-smooth;
             /*@apply snap-y snap-proximity;*/
+
+            /*
+            background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(38, 38, 38, 1) 75%),
+            radial-gradient(circle, rgba(0, 0, 0, 0) 20%, rgba(38, 38, 38, 1) 60%),
+            url('./examples/realcover.png');
+            TODO: Add gradient setup for landscape and portrait images, using libpng to detect
+             which, and applied via a template variable
+             copilot: get the width an height of a png
+            */
+        }
+
+        .page > div:not(#header):not(.message):not(.message_gap_notice):not(.message_picture):not(.footer) {
+            @apply hidden 2xl:block;
         }
 
         #header {
