@@ -9,6 +9,8 @@ combining continued messages, removing unrelated messages, embedding images inte
 picking your session out of the noise of a busy venue and even across multiple sessions and even
 different logs of different formats.
 
+Ready to get started? Check out the [instructions](#instructions) below.
+
 ## Features
 
 ### Core
@@ -53,7 +55,13 @@ All of these are optional and can be turned on or off as you like per-run.
 
 </details>
 
+## Examples
+
+<img src="example_usage.jpg" style="display:inline" alt="Example usage" /><img src="example_output.jpg" style="display:inline" alt="Example output" />
+
 ## Instructions
+
+### Quick-Start
 
 - Check [releases](https://github.com/zbee/xivrp-formatter/releases) for the latest version.
 - Download the `XIVRP-Formatter.zip` file and extract it somewhere.
@@ -61,10 +69,6 @@ All of these are optional and can be turned on or off as you like per-run.
 - Place any images taken during the session next to the executable.
 - Run the executable and follow the prompts.
 - Open the generated HTML file in your browser.
-
-## Examples
-
-<img src="example_usage.jpg" style="display:inline" alt="Example usage" /><img src="example_output.jpg" style="display:inline" alt="Example output" />
 
 ## Supports
 
