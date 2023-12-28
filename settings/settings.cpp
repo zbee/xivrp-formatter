@@ -1,6 +1,10 @@
 // XIVRP-Formatter Copyright (C) 2024 Ethan Henderson <ethan@zbee.codes>
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
+// TODO: after settings::structure map reduction, common utilities class, and
+//  ask are implemented, reduce #includes and reduce Problems and Smells across
+//  project
+
 #include "settings.h"
 #include "../includes/json.hpp"
 #include <filesystem>
