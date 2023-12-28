@@ -19,25 +19,24 @@ All of these are optional and can be turned on or off as you like per-run
 - Embed images depending on when they were taken during the session.
 - Find gaps in sessions that spanned multiple sittings and remove them, for real writing lengths.
 - Great for reading on desktop or mobile.
+- Saving of settings for optional use next-run, and command-line arguments for specific settings
+  and sweeping defaults, so you can use the program however you like.
 
-<details><summary style="cursor:pointer"><h3 style="display:inline">Planned Features</h3></summary>
+<details><summary style="cursor:pointer"><h3 style="display:inline">Planned Features (ToDo)</h3></summary>
 
 (Roughly in order of priority)
 
-- Command line arguments to provide specific settings and otherwise use defaults.
-- Finding sessions within a larger log.
-- Finding sessions across multiple formats provided at once
-- Images with `COVER` in their name to be displayed more prominently in some way
+- Designating cover images for the output, and styling it a variety of ways.
+- Finding roleplay sessions within a larger log.
+- Finding log files automatically. (e.g. finding your XIVLauncher folder and checking where the
+  plugins store their logs)
 - Profile images that match character names in the provided log.
 - Finding images automatically. (e.g. finding your XIV folder and checking for screenshots, or
   finding your gshade/reshade settings and checking where screenshots are saved)
-- Finding a roleplay session within a larger log.
+- Finding a roleplay session continued across multiple logs and combining them into one.
 - More detection for continued messages, e.g. simply the same person talking twice in a row.
 - Finding more than one roleplay session in a log, or combining multiple sessions in a larger
   log into one.
-- Option to save settings to file, to load when used with command line arguments.
-- Finding log files automatically. (e.g. finding your XIVLauncher folder and checking where the
-  plugins store their logs)
 
 </details>
 
