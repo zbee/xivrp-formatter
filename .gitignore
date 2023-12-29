@@ -1,5 +1,5 @@
-examples/
 *build*/
-*.png
+*.png*
+ChatLogs.json
 formatted_writing.html
 settings.json
