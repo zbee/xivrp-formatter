@@ -64,7 +64,7 @@ All of these are optional and can be turned on or off as you like per-run.
 
 ## Examples
 
-<img src="example_usage.jpg" style="display:inline" alt="Example usage" /><img src="example_output.jpg" style="display:inline" alt="Example output" />
+<img src="examples/example_usage.jpg" style="display:inline" alt="Example usage" /><img src="examples/example_output.jpg" style="display:inline" alt="Example output" />
 
 ## Instructions
 
