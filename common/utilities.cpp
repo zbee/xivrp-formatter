@@ -8,6 +8,7 @@
 
 namespace common {
 
+//<editor-fold desc="File Utilities">
 std::string common::utilities::get_real_path(std::string &path) {
   // Check if the path is empty
   if (path.empty())
@@ -42,7 +43,7 @@ bool common::utilities::check_file_exists(std::string file) {
   return !common::utilities::get_real_path(file).empty();
 }
 
-bool common::utilities::check_file_format(std::string file,
+bool common::utilities::check_file_format(const std::string &file,
                                           const std::string &format) {
   // Check if the file is a default
   if (file == "d" || file == "ad")
@@ -62,18 +63,22 @@ bool common::utilities::check_file_format(std::string file,
   return file_type == format;
 }
 
-bool common::utilities::check_hex_color(const std::string &color) {
-  // Pattern for a hex_color color, 6 or 3 characters long
-  std::regex hex_color_pattern{"^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"};
+std::list<std::string>
+common::utilities::find_files_near(const std::string &path_to_file) {
+  std::filesystem::path path(path_to_file);
+  std::string folder = path.parent_path().string();
+  std::list<std::string> files;
 
-  // Check that the color is a valid hex_color color string
-  bool matches = std::regex_match(color, hex_color_pattern);
-  bool matches_with_hash = std::regex_match("#" + color, hex_color_pattern);
+  // Find each file next to the log
+  for (const auto &entry : std::filesystem::directory_iterator(folder))
+    if (entry.is_regular_file())
+      files.push_back(entry.path().string());
 
-  // Return true if it's a valid hex_color color, or is with a hash sign added
-  return matches || matches_with_hash;
+  return files;
 }
+//</editor-fold>
 
+//<editor-fold desc="String Utilities">
 std::string common::utilities::select_first_n_words(const std::string &str,
                                                     int n) {
   std::istringstream iss(str);
@@ -185,6 +190,19 @@ int common::utilities::count_words(const std::string &str) {
   // Return the number of words
   return numWords;
 }
+//</editor-fold>
+
+bool common::utilities::check_hex_color(const std::string &color) {
+  // Pattern for a hex_color color, 6 or 3 characters long
+  std::regex hex_color_pattern{"^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"};
+
+  // Check that the color is a valid hex_color color string
+  bool matches = std::regex_match(color, hex_color_pattern);
+  bool matches_with_hash = std::regex_match("#" + color, hex_color_pattern);
+
+  // Return true if it's a valid hex_color color, or is with a hash sign added
+  return matches || matches_with_hash;
+}
 
 std::chrono::system_clock::time_point
 common::utilities::convert_timestamp(const std::string &dateTimeString) {
@@ -193,22 +211,9 @@ common::utilities::convert_timestamp(const std::string &dateTimeString) {
 
   // Parse the datetime string into a time point, based on its formatting
   in >> date::parse("%FT%T%Ez", timePoint);
+  // Ignore an error above. It's not real, and only even shows with MinGW.
 
   return timePoint;
-}
-
-std::list<std::string>
-common::utilities::find_files_near(const std::string &path_to_file) {
-  std::filesystem::path path(path_to_file);
-  std::string folder = path.parent_path().string();
-  std::list<std::string> files;
-
-  // Find each file next to the log
-  for (const auto &entry : std::filesystem::directory_iterator(folder))
-    if (entry.is_regular_file())
-      files.push_back(entry.path().string());
-
-  return files;
 }
 
 } // namespace common
