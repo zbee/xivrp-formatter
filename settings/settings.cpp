@@ -6,7 +6,7 @@
 //  project
 
 #include "settings.h"
-#include "../includes/json.hpp"
+#include "../common/utilities.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -74,79 +74,13 @@ std::tuple<bool, json> settings::loader::check_arguments(int arg_count,
   return std::make_tuple(all_defaults, settings_raw);
 }
 
-// TODO: move this and others to a static Common Utilities class
-std::string settings::loader::get_real_path(std::string &path) {
-  // Check if the path is empty
-  if (path.empty())
-    return "";
-
-  // Check if the file path exists
-  if (std::filesystem::exists(path))
-    return path;
-
-  // Check if variations on the path exist
-  if (std::filesystem::exists(".." + path))
-    return ".." + path;
-  if (std::filesystem::exists("../" + path))
-    return "../" + path;
-  if (std::filesystem::exists("../examples/" + path))
-    return "../examples/" + path;
-
-  // If none of these exist
-  return "";
-}
-
-bool settings::loader::check_file_exists(std::string file) {
-  // Check if the file is a default
-  if (file == "d" || file == "ad")
-    return true;
-
-  // Check if the file is empty
-  if (file.empty())
-    return false;
-
-  // Check the file exists, or any variations of it
-  return !settings::loader::get_real_path(file).empty();
-}
-
-bool settings::loader::check_file_format(std::string file, std::string format) {
-  // Check if the file is a default
-  if (file == "d" || file == "ad")
-    return true;
-
-  // Check if the file is empty
-  if (file.empty())
-    return false;
-
-  // Check if the file name is shorter than the required format
-  if (file.length() < format.length())
-    return false;
-
-  // Check the file extension is the correct format
-  std::string file_type = file.substr(file.length() - format.length());
-
-  return file_type == format;
-}
-
-bool settings::loader::check_hex_color(std::string color) {
-  // Pattern for a hex_color color, 6 or 3 characters long
-  std::regex hex_color_pattern{"^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"};
-
-  // Check that the color is a valid hex_color color string
-  bool matches = std::regex_match(color, hex_color_pattern);
-  bool matches_with_hash = std::regex_match("#" + color, hex_color_pattern);
-
-  // Return true if it's a valid hex_color color, or is with a hash sign added
-  return matches || matches_with_hash;
-}
-
 bool settings::loader::verify_log_file() const {
   // Double check that the log file exists
-  if (!settings::loader::check_file_exists(this->settings.log_file_path))
+  if (!common::utilities::check_file_exists(this->settings.log_file_path))
     return false;
   // Double check that the log file is json
-  if (!settings::loader::check_file_format(this->settings.log_file_path,
-                                           ".json"))
+  if (!common::utilities::check_file_format(this->settings.log_file_path,
+                                            ".json"))
     return false;
 
   try {
@@ -166,10 +100,11 @@ bool settings::loader::verify_template_file() const {
   //  each required template placeholder is present
 
   // Double check that the template file exists
-  if (!this->check_file_exists(this->settings.template_file_path))
+  if (!common::utilities::check_file_exists(this->settings.template_file_path))
     return false;
   // Double check that the template file is html
-  if (!this->check_file_format(this->settings.template_file_path, ".html"))
+  if (!common::utilities::check_file_format(this->settings.template_file_path,
+                                            ".html"))
     return false;
 
   std::string line;
@@ -203,7 +138,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
             << std::endl;
 
   // TODO: move this to ask::ask and ask::ask_questions
-  //  Loop over each setting in the guide
+  // Loop over each setting in the guide
   bool use_all_defaults = false;
   for (auto &setting_raw : this->settings_requesting_guide.items()) {
     auto setting = setting_raw.value();
@@ -390,10 +325,10 @@ settings::loader::get_settings(const json &settings_from_arguments) {
         }
       } else if (wants == answer_types::path) {
         // Check if the answer is a valid path
-        valid_answer = this->check_file_exists(answer);
+        valid_answer = common::utilities::check_file_exists(answer);
       } else if (wants == answer_types::hex_color) {
         // Check if the answer is a valid hex_color color
-        valid_answer = this->check_hex_color(answer);
+        valid_answer = common::utilities::check_hex_color(answer);
       } else if (wants == answer_types::yesno) {
         // Check if the answer is a valid boolean
         valid_answer = answer_lower == "yes" || answer_lower == "y" ||

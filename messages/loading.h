@@ -42,10 +42,6 @@ private:
   // Number of participants
   int get_number_of_participants();
 
-  // Method to convert a date/time string into a time_point
-  static std::chrono::system_clock::time_point
-  convertDateTimeString(const std::string &dateTimeString);
-
   std::list<messages::message> get_messages();
 };
 

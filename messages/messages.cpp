@@ -2,11 +2,11 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include "messages.h"
+#include "../common/utilities.h"
 #include "../images/related_images.h"
 #include "../includes/date.h"
 #include <chrono>
 #include <iostream>
-#include <sstream>
 #include <utility>
 
 messages::structure::structure(
@@ -19,22 +19,6 @@ messages::structure::structure(
   this->number_of_participants = number_of_participants;
   this->messages = std::move(messages);
   this->set_time_data(start_time, end_time);
-}
-
-std::string selectFirstNWords(const std::string &str, int n) {
-  std::istringstream iss(str);
-  std::vector<std::string> words;
-  std::string word;
-  while (iss >> word) {
-    words.push_back(word);
-  }
-
-  std::string result;
-  for (int i = 0; i < n && i < words.size(); ++i) {
-    result += words[i] + " ";
-  }
-
-  return result;
 }
 
 #pragma clang diagnostic push
@@ -66,7 +50,9 @@ int messages::structure::combine(bool debug) {
     message_content = message.content.to_str();
 
     if (debug)
-      std::cout << "'" << selectFirstNWords(message_content, 5) << "' ... ";
+      std::cout << "'"
+                << common::utilities::select_first_n_words(message_content, 5)
+                << "' ... ";
 
     // If the message needs to be continued
     if (message.is_continued && !seeking_continuation) {
@@ -86,8 +72,10 @@ int messages::structure::combine(bool debug) {
 
       if (debug)
         std::cout << "continuing '"
-                  << selectFirstNWords(message_to_combine_into, 5)
-                  << "' ... with ... '" << selectFirstNWords(message_content, 5)
+                  << common::utilities::select_first_n_words(
+                         message_to_combine_into, 5)
+                  << "' ... with ... '"
+                  << common::utilities::select_first_n_words(message_content, 5)
                   << "' ... " << std::endl;
 
       // Add to the message
@@ -114,7 +102,7 @@ int messages::structure::combine(bool debug) {
 
         // Set the message length
         (*message_seeking_continuation).message_length =
-            messages::message::count_words(message_to_combine_into);
+            common::utilities::count_words(message_to_combine_into);
 
         // Save the message
         combined_messages.push_back(*message_seeking_continuation);

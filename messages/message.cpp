@@ -2,6 +2,7 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include "message.h"
+#include "../common/utilities.h"
 #include "../includes/date.h"
 #include <codecvt>
 #include <list>
@@ -18,7 +19,7 @@ messages::message::message(int id, // NOLINT(*-pro-type-member-init)
   this->id = id;
   this->author = std::move(author);
   this->message_length =
-      messages::message::count_words(this->content.to_print());
+      common::utilities::count_words(this->content.to_print());
 
   // Set the time data
   this->set_time_data(start_time, message_time);
@@ -84,20 +85,6 @@ std::string messages::message::format() {
   return html;
 }
 
-int messages::message::count_words(const std::string &str) {
-  std::stringstream ss(str);
-  std::string word;
-  int numWords = 0;
-
-  // Count the number of words in the string
-  while (ss >> word) {
-    numWords++;
-  }
-
-  // Return the number of words
-  return numWords;
-}
-
 void messages::message::check_for_continuation() {
   // TODO: swap this to list of regexes, so I don't have to hardcode message
   //  lengths
@@ -112,7 +99,7 @@ void messages::message::check_for_continuation() {
       "1/7)", "2/7)", "3/7)", "4/7)", "5/7)", "6/7)",
   };
 
-  if (messages::message::ends_with_any(this->content.to_print(),
+  if (common::utilities::ends_with_any(this->content.to_print(),
                                        continued_marks)) {
     this->is_continued = true;
   }
@@ -126,9 +113,9 @@ void messages::message::check_for_continuation() {
       "6/6)", "2/7)", "3/7)", "4/7)", "5/7)", "6/7)", "7/7)",
   };
 
-  if (messages::message::starts_with_any(this->content.to_print(),
+  if (common::utilities::starts_with_any(this->content.to_print(),
                                          continuation_marks_prefixes) ||
-      messages::message::ends_with_any(this->content.to_print(),
+      common::utilities::ends_with_any(this->content.to_print(),
                                        continuation_marks)) {
     this->is_continuation = true;
   }
@@ -163,9 +150,9 @@ void messages::message::check_for_ooc() {
   };
 
   bool starts_with =
-      messages::message::starts_with_any(this->content.to_print(), pre_marks);
+      common::utilities::starts_with_any(this->content.to_print(), pre_marks);
   bool ends_with =
-      messages::message::ends_with_any(this->content.to_print(), post_marks);
+      common::utilities::ends_with_any(this->content.to_print(), post_marks);
 
   if ((starts_with && ends_with) || starts_with) {
     this->is_ooc = true;
@@ -186,87 +173,6 @@ void messages::message::set_time_data(
   // Format the time since the start of the log
   this->into_session =
       date::format("%R", floor<std::chrono::milliseconds>(elapsed_time));
-}
-
-bool messages::message::starts_with_any( // NOLINT(*-no-recursion)
-    const std::string &str, const std::list<std::string> &arr) {
-
-  // Check that the string is longer than the array items
-  for (const auto &prefix : arr)
-    if (prefix.size() >= str.size())
-      return false;
-
-  // Early returns, for FILLER items
-  if (str == "FILLER")
-    return false;
-
-  // Search each element in the array, checking if it is the prefix of the
-  // string
-  bool has_prefix =
-      std::any_of(arr.begin(), arr.end(), [&str](const std::string &prefix) {
-        // Don't even check the string for this prefix if the prefix is longer
-        if (prefix.size() > str.size())
-          return false;
-        // Check if the prefix is the beginning of the string
-        return std::equal(prefix.begin(), prefix.end(), str.begin());
-      });
-
-  if (has_prefix) {
-    // If the string ends with any of the prefixes, return true
-    return true;
-  } else if (str.find(' ') != std::string::npos) {
-    // If the string does not start with any of the prefixes, return the result
-    // of trying again but with no spaces in the string
-    std::string no_space = str;
-    no_space.erase(std::remove(no_space.begin(), no_space.end(), ' '),
-                   no_space.end());
-    return starts_with_any(no_space, arr);
-  } else {
-    // If the string does not end with any of the prefixes, and we already tried
-    // removing the spaces, return false
-    return false;
-  }
-}
-
-bool messages::message::ends_with_any( // NOLINT(*-no-recursion)
-    const std::string &str, const std::list<std::string> &arr) {
-
-  // Check that the string is longer than the array items
-  for (const auto &suffix : arr)
-    if (suffix.size() >= str.size())
-      return false;
-
-  // Early returns, for FILLER items
-  if (str == "FILLER")
-    return false;
-
-  // Search each element in the array, checking if it is the suffix of the
-  // string
-  bool has_suffix =
-      std::any_of(arr.begin(), arr.end(), [&str](const std::string &suffix) {
-        // Don't even check the string for this suffix if the suffix is
-        // longer
-        if (suffix.size() > str.size())
-          return false;
-        // Check if the suffix is the end of the string
-        return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
-      });
-
-  if (has_suffix) {
-    // If the string ends with any of the suffixes, return true
-    return true;
-  } else if (str.find(' ') != std::string::npos) {
-    // If the string does not end with any of the suffixes, return the
-    // result of trying again but with no spaces in the string
-    std::string no_space = str;
-    no_space.erase(std::remove(no_space.begin(), no_space.end(), ' '),
-                   no_space.end());
-    return starts_with_any(no_space, arr);
-  } else {
-    // If the string does not end with any of the suffixes, and we already
-    // tried removing the spaces, return false
-    return false;
-  }
 }
 
 messages::message_body::message_body(std::string content) {
@@ -296,7 +202,7 @@ std::string messages::message_body::to_print() {
       // Cast it into the actual character
       auto c = static_cast<char32_t>(std::stoul(code, nullptr, 16));
       result += converter.to_bytes(c);
-      // Move on, 5 for \uXXXX
+      // Move on, 5 for \u-formatted unicode
       i += 5;
     } else {
       // Move on, just copying this non-unicode character

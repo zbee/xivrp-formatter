@@ -2,6 +2,7 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include "related_images.h"
+#include "../common/utilities.h"
 #include "../includes/base64.hpp"
 #include "../includes/date.h"
 #include <filesystem>
@@ -9,33 +10,19 @@
 #include <iostream>
 #include <string>
 #include <utility>
-#include <vector>
 
 namespace related_images {
 
 related_images::related_images(const std::string &log_file_location,
                                const messages::structure &messages) {
-  // Find folder of the log file
-  std::filesystem::path log_file_path(log_file_location);
-  this->log_folder = log_file_path.parent_path().string();
+  // Find files near log
+  auto nearby_files = common::utilities::find_files_near(log_file_location);
 
   // Find images next to the log file
-  auto image_paths = this->find_images(this->find_files());
+  auto image_paths = this->find_images(nearby_files);
 
   // Find messages that are related to the images
   this->images = this->relate_images(image_paths, messages);
-}
-
-std::list<std::string> related_images::find_files() {
-  std::list<std::string> files;
-
-  // Find each file next to the log
-  for (const auto &entry :
-       std::filesystem::directory_iterator(this->log_folder))
-    if (entry.is_regular_file())
-      files.push_back(entry.path().string());
-
-  return files;
 }
 
 std::list<std::string>
@@ -49,17 +36,6 @@ related_images::find_images( // NOLINT(*-convert-member-functions-to-static)
       image_paths.push_back(file);
 
   return image_paths;
-}
-
-std::chrono::system_clock::time_point
-related_images::convertDateTimeString(const std::string &dateTimeString) {
-  std::istringstream in{dateTimeString};
-  std::chrono::system_clock::time_point timePoint;
-
-  // Parse the datetime string into a time point, based on its formatting
-  in >> date::parse("%FT%T%Ez", timePoint);
-
-  return timePoint;
 }
 
 int related_images::get_message_by_time(
@@ -116,7 +92,7 @@ related_images::relate_images(std::list<std::string> images,
       dateTimeString += "-00:00";
 
       // Convert the formed timestamp
-      timePoint = related_images::convertDateTimeString(dateTimeString);
+      timePoint = common::utilities::convert_timestamp(dateTimeString);
 
       // Check if the timestamp is valid
       std::time_t tt = std::chrono::system_clock::to_time_t(timePoint);

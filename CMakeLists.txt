@@ -11,6 +11,9 @@ add_executable(XIVRP-Formatter main.cpp
         #includes/NLTemplate.h
         includes/base64.hpp
 
+        common/utilities.cpp
+        common/utilities.h
+
         settings/settings.cpp
         settings/settings.h
         settings/ask.cpp

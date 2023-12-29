@@ -2,8 +2,7 @@
 // Licensed under GPLv3 - Refer to the LICENSE file for the complete text
 
 #include "loading.h"
-#include "../includes/date.h"
-#include "../includes/json.hpp"
+#include "../common/utilities.h"
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -58,8 +57,8 @@ messages::load::load(const settings::structure &settings) {
   this->messages = messages::structure(
       this->get_messages_owner(), this->get_number_of_messages(),
       this->get_number_of_participants(), std::move(messages_list),
-      messages::load::convertDateTimeString(this->messages_log[0]["DateSent"]),
-      messages::load::convertDateTimeString(
+      common::utilities::convert_timestamp(this->messages_log[0]["DateSent"]),
+      common::utilities::convert_timestamp(
           this->messages_log[this->get_number_of_messages() - 1]["DateSent"]));
 
   std::cout << "...messages built" << std::endl << std::endl;
@@ -92,17 +91,6 @@ int messages::load::get_number_of_participants() {
 
   // Return the number of unique character names
   return (int)participants.size();
-}
-
-std::chrono::system_clock::time_point
-messages::load::convertDateTimeString(const std::string &dateTimeString) {
-  std::istringstream in{dateTimeString};
-  std::chrono::system_clock::time_point timePoint;
-
-  // Parse the datetime string into a time point, based on its formatting
-  in >> date::parse("%FT%T", timePoint);
-
-  return timePoint;
 }
 
 std::list<messages::message> messages::load::get_messages() {
@@ -138,9 +126,8 @@ std::list<messages::message> messages::load::get_messages() {
 
     messages.emplace_back(
         i, message["SenderName"], message_body,
-        messages::load::convertDateTimeString(
-            this->messages_log[0]["DateSent"]),
-        messages::load::convertDateTimeString(message["DateSent"]));
+        common::utilities::convert_timestamp(this->messages_log[0]["DateSent"]),
+        common::utilities::convert_timestamp(message["DateSent"]));
   }
 
   std::cout << "......skipped " << skipped_messages << " short messages"

@@ -71,9 +71,6 @@ public:
   // Actual time of the messages
   std::chrono::duration<double> elapsed_time;
 
-  // Method to count the number of words in the message
-  static int count_words(const std::string &str);
-
 private:
   // Method to check for continuation
   void check_for_continuation();
@@ -87,12 +84,6 @@ private:
   // Method to set the time data
   void set_time_data(std::chrono::system_clock::time_point start_time,
                      std::chrono::system_clock::time_point message_time);
-
-  // Methods to check if the string starts or ends with an array of strings
-  static bool starts_with_any(const std::string &str,
-                              const std::list<std::string> &arr);
-  static bool ends_with_any(const std::string &str,
-                            const std::list<std::string> &arr);
 };
 
 } // namespace messages

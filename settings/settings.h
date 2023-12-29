@@ -128,19 +128,6 @@ public:
   // Constructor - retrieves the user's settings then verifies them
   explicit loader(int arg_count, char *arguments[]);
 
-  // Method to check a few other paths for the given file
-  [[nodiscard]] static std::string get_real_path(std::string &path);
-
-  // Method to check if a file exists
-  [[nodiscard]] static bool check_file_exists(std::string file);
-
-  // Method to check if a file has the right extension
-  [[nodiscard]] static bool check_file_format(std::string file,
-                                              std::string format);
-
-  // Method to check if a string is a valid hex_color color
-  [[nodiscard]] static bool check_hex_color(std::string color);
-
 private:
   std::tuple<bool, json> check_arguments(int arg_count, char *arguments[]);
 

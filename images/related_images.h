@@ -60,18 +60,8 @@ public:
   int images_pushed_down{0};
 
 private:
-  // Derived path to the log file
-  std::string log_folder;
-
-  // Method to find the files in the log folder
-  std::list<std::string> find_files();
-
   // Method to find the images of the discovered files
   std::list<std::string> find_images(const std::list<std::string> &files);
-
-  // Method to convert a date/time string into a time_point
-  static std::chrono::system_clock::time_point
-  convertDateTimeString(const std::string &dateTimeString);
 
   // Method to get the message before a given a time point
   int get_message_by_time(std::chrono::system_clock::time_point time,
