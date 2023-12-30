@@ -11,7 +11,6 @@
 #include <fstream>
 #include <iostream>
 #include <list>
-#include <regex>
 #include <string>
 
 using json = nlohmann::json;
@@ -140,7 +139,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
   // TODO: move this to ask::ask and ask::ask_questions
   // Loop over each setting in the guide
   bool use_all_defaults = false;
-  for (auto &setting_raw : this->settings_requesting_guide.items()) {
+  for (auto &setting_raw : working_settings.items()) {
     auto setting = setting_raw.value();
 
     // TODO: move this to ask::load_question and a question structure
@@ -298,7 +297,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
       // Ask the user for their answer
       std::getline(std::cin, answer);
 
-      // TODO: move this to ask::hanle_answer
+      // TODO: move this to ask::handle_answer
       // Make a lowercase version of the answer
       auto answer_lower = answer;
       std::transform(answer_lower.begin(), answer_lower.end(),

@@ -5,6 +5,7 @@
 #define SETTINGS_H
 
 #include "../includes/json.hpp"
+#include "ask.h"
 #include <string>
 
 using json = nlohmann::json;
@@ -36,30 +37,10 @@ enum images_location {
   screenshots = 4, // Look for screenshots
 };
 
-// TODO: Move to ask
-//<editor-fold desc="Structure for asking for settings">
-
-enum compare {
-  is_any = 0,
-  not_any = 1,
-  is = 2,
-  is_not = 3,
-};
-
-enum answer_types {
-  option = -1,
-  hex_color = 0,
-  yesno = 1,
-  path = 2,
-};
-
-enum answer { no = 0, yes = 1 };
-
-//</editor-fold>
-
 // TODO: Make this a map, or at least include a map to reduce where the list of
 //  settings has to be maintained
 struct structure {
+  //<editor-fold desc="Actual Settings">
   // The message log to use
   std::string log_file_path{"../examples/ChatLogs.json"};
   // TODO: Pass in WorkingDirectory so this works in debug or from the binary
@@ -100,6 +81,25 @@ struct structure {
 
   // The JSON for the save file
   json working_json;
+  //</editor-fold>
+
+  // Map of settings
+  std::map<std::string, std::any> settings = {
+      {"log_file_path", log_file_path},
+      {"log_file_type", log_file_type},
+      {"template_file_path", template_file_path},
+      {"output_file_path", output_file_path},
+      {"remove_out_of_character", remove_out_of_character},
+      {"highlight_emphatics", highlight_emphatics},
+      {"emphatic_highlight_color", emphatic_highlight_color},
+      {"combine_messages", combine_messages},
+      {"combine_logs", combine_logs},
+      {"find_related_images", find_related_images},
+      {"related_images_location", related_images_location},
+      {"want_timestamps", want_timestamps},
+      {"squash_time_gaps", squash_time_gaps},
+      {"debug", debug},
+  };
 
   // Method to get the default value for a setting
   [[nodiscard]] std::tuple<bool, std::string> get_default(std::string setting);
@@ -110,44 +110,19 @@ struct structure {
   // Method to set a setting
   void set_setting(std::string setting, std::any value);
 
+  // Method to load the settings from a file
+  json load_settings();
+
   // Method to save the settings to a file
   void save_settings() const;
 
-  // Method to load the settings from a file
-  json load_settings();
-};
-
-class loader {
-public:
-  // The settings the user chose
-  structure settings;
-  // Whether the settings were verified
-  bool log_verified{false};
-  bool template_verified{false};
-
-  // Constructor - retrieves the user's settings then verifies them
-  explicit loader(int arg_count, char *arguments[]);
-
-private:
-  std::tuple<bool, json> check_arguments(int arg_count, char *arguments[]);
-
-  // Method to get the user's settings
-  structure get_settings(const json &settings_from_arguments);
-
-  // Method to verify the log file
-  [[nodiscard]] bool verify_log_file() const;
-
-  // Method to verify the template file
-  [[nodiscard]] bool verify_template_file() const;
-
-  // TODO: move this into the structure
-  // TODO: change this to a raw string literal _json instead of a first-class
-  //  type
-  // TODO: separate settings into standard and advanced settings
   //<editor-fold desc="Settings Requesting">
-  json settings_requesting_guide = {
-      {{"setting", "log_file_type"},
-       {"ask", "How should the log file be found?"},
+  // This is JSON's first-class type despite it's ugliness as otherwise it's
+  // impossible to use enum values in an even relatively clean manner
+  json settings_guide = {
+      //<editor-fold desc="log_file_type">
+      {{"identifier", "log_file_type"},
+       {"question", "How should the log file be found?"},
        {"wants", answer_types::option},
        {"options",
         {
@@ -180,13 +155,15 @@ private:
                 {"value", log_type::xivlogger},
             },
         }}},
-      {{"setting", "log_file_path"},
-       {"ask", "Where is the log file?"},
+      //</editor-fold>
+      //<editor-fold desc="log_file_path">
+      {{"identifier", "log_file_path"},
+       {"question", "Where is the log file?"},
        {"wants", answer_types::path},
        {"requires",
         {
             {
-                {"setting", "log_file_type"},
+                {"identifier", "log_file_type"},
                 {"comparison", compare::not_any},
                 {"value",
                  {
@@ -195,40 +172,45 @@ private:
                  }},
             },
         }}},
-      {{"setting", "template_file_path"},
-       {"ask", "Where is the template file you would like to use?"},
+      //</editor-fold>
+      {{"identifier", "template_file_path"},
+       {"question", "Where is the template file you would like to use?"},
        {"wants", answer_types::path}},
-      {{"setting", "output_file_path"},
-       {"ask", "Where should the output file be saved?"},
+      {{"identifier", "output_file_path"},
+       {"question", "Where should the output file be saved?"},
        {"wants", answer_types::path}},
-      {{"setting", "remove_out_of_character"},
-       {"ask", "Should out of character messages be removed?"},
+      {{"identifier", "remove_out_of_character"},
+       {"question", "Should out of character messages be removed?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "highlight_emphatics"},
-       {"ask", "Should emphatics be highlighted?"},
+      {{"identifier", "highlight_emphatics"},
+       {"question", "Should emphatics be highlighted?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "emphatic_highlight_color"},
-       {"ask", "What color should emphatics be highlighted with?"},
+      //<editor-fold desc="emphatic_highlight_color">
+      {{"identifier", "emphatic_highlight_color"},
+       {"question", "What color should emphatics be highlighted with?"},
        {"wants", answer_types::hex_color},
        {"requires",
         {
             {
-                {"setting", "highlight_emphatics"},
+                {"identifier", "highlight_emphatics"},
                 {"comparison", compare::is},
                 {"value", answer::yes},
             },
         }}},
-      {{"setting", "combine_messages"},
-       {"ask", "Should messages that are continuations of others be combined?"},
+      //</editor-fold>
+      {{"identifier", "combine_messages"},
+       {"question",
+        "Should messages that are continuations of others be combined?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "combine_logs"},
-       {"ask", "Should multiple logs be combined and de-duplicated?"},
+      {{"identifier", "combine_logs"},
+       {"question", "Should multiple logs be combined and de-duplicated?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "find_related_images"},
-       {"ask", "Should related images be found and inserted?"},
+      {{"identifier", "find_related_images"},
+       {"question", "Should related images be found and inserted?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "related_images_location"},
-       {"ask", "Where should related images be looked for?"},
+      //<editor-fold desc="related_images_location">
+      {{"identifier", "related_images_location"},
+       {"question", "Where should related images be looked for?"},
        {"wants", answer_types::option},
        {"options",
         {
@@ -256,20 +238,46 @@ private:
        {"requires",
         {
             {
-                {"setting", "find_related_images"},
+                {"identifier", "find_related_images"},
                 {"comparison", compare::is},
                 {"value", answer::yes},
             },
         }}},
-      {{"setting", "want_timestamps"},
-       {"ask", "Should timestamps be included for messages in the output?"},
+      //</editor-fold>
+      {{"identifier", "want_timestamps"},
+       {"question",
+        "Should timestamps be included for messages in the output?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "squash_time_gaps"},
-       {"ask", "Should gaps in timestamps be filled?"},
+      {{"identifier", "squash_time_gaps"},
+       {"question", "Should gaps in timestamps be filled?"},
        {"wants", answer_types::yesno}},
-      {{"setting", "debug"}, {"wants", answer_types::yesno}},
+      {{"identifier", "debug"}, {"wants", answer_types::yesno}},
   };
   //</editor-fold>
+};
+
+class loader {
+public:
+  // The settings the user chose
+  structure settings;
+  // Whether the settings were verified
+  bool log_verified{false};
+  bool template_verified{false};
+
+  // Constructor - retrieves the user's settings then verifies them
+  explicit loader(int arg_count, char *arguments[]);
+
+private:
+  std::tuple<bool, json> check_arguments(int arg_count, char *arguments[]);
+
+  // Method to get the user's settings
+  structure get_settings(const json &settings_from_arguments);
+
+  // Method to verify the log file
+  [[nodiscard]] bool verify_log_file() const;
+
+  // Method to verify the template file
+  [[nodiscard]] bool verify_template_file() const;
 };
 } // namespace settings
 
