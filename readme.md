@@ -1,13 +1,20 @@
 # XIVRP-Formatter
 
-This is designed to take your logs from your roleplaying sessions in FFXIV and format them up into
-a nice looking HTML page, that's easy to re-read, share with others, an embed pictures into.
+This is a Final Fantasy: XIV Roleplay Formatter, designed to take your logs from your roleplaying
+sessions in FFXIV and format them up into a nice looking HTML page, that's easy to re-read,
+share with others, and with intelligently embedded pictures you took in-game.
 
-Besides formatting it into a simple, readability-focused, HTML page, it also works to make your
+Besides formatting it into a simple, readability-focused, HTML page: it also works to make your
 sessions easier and more enjoyable to read by converting simple formatting into styled HTML,
 combining continued messages, removing unrelated messages, embedding images intelligently, and
-picking your session out of the noise of a busy venue and even across multiple sessions and even
+picking your session out of the noise of a busy venue and even across multiple sessions and
 different logs of different formats.
+
+And don't worry, it's still all private: The only place your writing or images go by the end of
+the program's run is into an HTML file on your own computer, your privacy is still completely in
+your own hands.
+Additionally, it is completely safe to mess around with: it doesn't edit the original logs or
+images at all, only reads them and uses that to create the formatted output.
 
 Ready to get started? Check out the [instructions](#instructions) below.
 
@@ -17,6 +24,10 @@ the [wiki](https://github.com/zbee/xivrp-formatter/wiki) (ToDo!).
 Want to contribute? Check out
 the [contributing guide](https://github.com/zbee/xivrp-formatter/wiki/contributing) (ToDo!)
 or the Sponsor section along the right.
+
+Running into some problems? Check out
+the [troubleshooting guide](https://github.com/zbee/xivrp-formatter/wiki/troubleshooting) (ToDo!)
+or [open an issue](https://github.com/zbee/xivrp-formatter/issues/new).
 
 ## Features
 
@@ -79,10 +90,9 @@ All of these are optional and can be turned on or off as you like per-run.
 
 ## Supports
 
-The following log types are supported:
+The following log types are currently supported:
 
 - [ChatScan](https://github.com/serifine/XIV-Chat-Scanner) logs
-- PNG Images in the same folder as the chat logs
 
 ### Planned Support
 
