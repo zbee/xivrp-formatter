@@ -56,7 +56,7 @@ public:
   bool used_default{false};
 
 private:
-  // The answers so far received, to check requirements agains)
+  // The answers so far received, to check requirements against
   std::map<std::string, std::pair<bool, std::string>> answers_so_far = {};
 
   // The question data

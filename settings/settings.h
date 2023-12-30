@@ -118,7 +118,7 @@ struct structure {
 
   //<editor-fold desc="Settings Requesting">
   // This is JSON's first-class type despite it's ugliness as otherwise it's
-  // impossible to use enum values in an even relatively clean manner
+  // impossible to use enum values in an even remotely clean manner
   json settings_guide = {
       //<editor-fold desc="log_file_type">
       {{"identifier", "log_file_type"},

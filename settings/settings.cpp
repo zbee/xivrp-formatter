@@ -127,22 +127,18 @@ bool settings::loader::verify_template_file() const {
 
 settings::structure
 settings::loader::get_settings(const json &settings_from_arguments) {
-  // TODO: Break this apart into pieces in ask.h. Namely, so it can be used to
-  //  ask impromptu questions, like about discovered cover images, but also just
-  //  because it's 200 lines ...
+  // TODO: Switch this to using settings::ask
 
   json working_settings;
 
   std::cout << "[enter 'AD' at any time to default all further settings]"
             << std::endl;
 
-  // TODO: move this to ask::ask and ask::ask_questions
   // Loop over each setting in the guide
   bool use_all_defaults = false;
   for (auto &setting_raw : working_settings.items()) {
     auto setting = setting_raw.value();
 
-    // TODO: move this to ask::load_question and a question structure
     // Get basic settings data
     bool ask = false;
     std::string question;
@@ -163,6 +159,7 @@ settings::loader::get_settings(const json &settings_from_arguments) {
     if (!ask)
       continue;
 
+    // TODO: keep this
     // Don't ask for settings that were provided in the arguments
     if (settings_from_arguments.contains(setting_name)) {
       this->settings.set_setting(setting_name,
@@ -190,7 +187,6 @@ settings::loader::get_settings(const json &settings_from_arguments) {
       requirements = setting["requires"];
     }
 
-    // TODO: move this to ask::check_requirements
     // Check for requirements
     bool met_requirements = true;
     if (has_requirements) {
@@ -257,7 +253,6 @@ settings::loader::get_settings(const json &settings_from_arguments) {
     bool valid_answer = false;
     bool options_shown = false;
 
-    // TODO: move this to ask::form_question
     // Ask the user the setting's question, and suggest saved or default values
     if (!default_is_from_saved_settings)
       std::cout << std::endl
@@ -268,10 +263,8 @@ settings::loader::get_settings(const json &settings_from_arguments) {
                 << question << " [press enter for saved: " << default_value
                 << "]";
 
-    // TODO: move this to ask::ask_questions
     // Loop until the user gives a valid answer
     while (!valid_answer) {
-      // TODO: move this to ask::form_question and ask::load_options in
       // ask::load_question
       //<editor-fold desc="Options Handling">
       // If the setting has options, print them
