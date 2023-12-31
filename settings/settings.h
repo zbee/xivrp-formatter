@@ -13,6 +13,12 @@ using json = nlohmann::json;
 
 namespace settings {
 
+/**
+ * @brief How to look for logs to read
+ * @see settings::structure::log_file_type
+ * @see settings::structure::log_file_path
+ * @see messages::load::load()
+ */
 enum log_type {
   smartFind = 0, // Automatically find logs to use;
                  // finding your XIVLauncher config, then finding your logs
@@ -27,6 +33,11 @@ enum log_type {
   xivlogger = 6, // Specific XIVLogger log
 };
 
+/**
+ * @brief How to look for related images
+ * @see settings::structure::related_images_location
+ * @see related_images::related_images()
+ */
 enum images_location {
   smartLocate = 0, // Automatically find images to use;
                    // attempting to find your reshade settings then your reshade
