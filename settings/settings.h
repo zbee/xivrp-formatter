@@ -39,51 +39,96 @@ enum images_location {
 };
 
 struct structure {
+  /**
+   * @brief The path to the settings file
+   */
   std::string settings_file_path{"settings.json"};
 
   //<editor-fold desc="Actual Settings">
-  // The message log to use
+  /**
+   * @brief The path to the log file
+   * @see settings::structure::log_file_type
+   */
   std::string log_file_path{"ChatLogs.json"};
-  // TODO: Pass in WorkingDirectory so this works in debug or from the binary
-  // The type of log file
+  /**
+   * @brief The type of log file to use. Currently unused, will be put to use
+   * @see settings::structure::log_file_path
+   */
   log_type log_file_type{log_type::smartFind};
-  // The template file to use
+  /**
+   * @brief The path to the template file
+   */
   std::string template_file_path{"template.html"};
-  // The file to output to
+  /**
+   * @brief The path to the output file
+   */
   std::string output_file_path{"formatted_writing.html"};
 
-  // Whether OOC messages should be removed
+  /**
+   * @brief Whether out of character messages should be removed
+   */
   bool remove_out_of_character{true};
 
-  // Whether ~emphatics~ should be highlighted
+  /**
+   * @brief Whether emphatics should be highlighted
+   * @see settings::structure::emphatic_highlight_color
+   */
   bool highlight_emphatics{true};
-  // The color that emphatics should be highlighted with
+  /**
+   * @brief The color that emphatics should be highlighted with
+   * @see settings::structure::highlight_emphatics
+   */
   std::string emphatic_highlight_color{"#DD9FC1"};
 
-  // Whether continued messages should be combined
+  /**
+   * @brief Whether messages that are continuations of others should be combined
+   */
   bool combine_messages{true};
 
-  // Whether multiple logs (including from other services) should be combined
-  // and de-duplicated
+  /**
+   * @brief Whether multiple logs should be combined and de-duplicated (from all
+   * selected services)
+   */
   bool combine_logs{true};
 
-  // Whether related images should be checked for, and inserted
+  /**
+   * @brief Whether related images should be checked for, and inserted
+   * @see settings::structure::related_images_location
+   */
   bool find_related_images{true};
-  // Where to look for related images
+  /**
+   * @brief Where to look for related images
+   * @see settings::structure::find_related_images
+   */
   images_location related_images_location{images_location::smartLocate};
 
-  // Whether timestamps should be included in the output reading
+  /**
+   * @brief Whether timestamps should be included in the output
+   */
   bool want_timestamps{true};
-  // Whether gaps in timestamps should be filled
+  /**
+   * @brief Whether gaps in timestamps should be filled
+   */
   bool squash_time_gaps{true};
 
-  // Whether the program should print debug information
+  /**
+   * @brief Whether the program should print debug information
+   */
   bool debug{false};
 
-  // The JSON for the save file
+  /**
+   * @brief The working json, for saving settings
+   * @see settings::structure::save_settings()
+   */
   json working_json;
   //</editor-fold>
 
+  /**
+   * @brief A map of this structure's settings, for less repetition of the whole
+   * list of settings
+   * @see settings::structure::get_default()
+   * @see settings::structure::set_setting()
+   */
   //<editor-fold desc="Map of Settings">
   std::map<std::string, std::string> settings = {
       {"log_file_path", log_file_path},
@@ -104,23 +149,51 @@ struct structure {
   };
   //</editor-fold>
 
-  // Method to get the default value for a setting
+  /**
+   * @brief Get the default value for a setting, and whether it is
+   * program-default or from saved settings
+   * @param setting The setting identifier to get the default value for
+   * @return A tuple containing the source of the default, and the default value
+   * @see settings::default_source
+   */
   [[nodiscard]] static std::tuple<settings::default_source, std::string>
   get_default(const std::string &setting);
 
-  // Method to set a setting
+  /**
+   * @brief Set a setting, and save it to the working json for saving
+   * @param setting The setting identifier to set
+   * @param value The value to set the setting to
+   * @param skip_json_save Whether to skip saving the setting to the working
+   * json
+   * @return Whether the setting was set successfully in the structure
+   */
   bool set_setting(const std::string &setting, const std::string &value,
                    bool skip_json_save = false);
 
-  // Method to load the settings from a file
+  /**
+   * @brief Load the settings from the save file
+   * @return The loaded settings
+   * @see settings::structure::settings_file_path
+   */
   json load_settings();
 
-  // Method to save the settings to a file
+  /**
+   * @brief Save the working json to the save file
+   * @see settings::structure::working_json
+   * @see settings::structure::settings_file_path
+   */
   void save_settings() const;
 
+  /**
+   * @brief This is the format given to ask to ask the usr for all settings for
+   * the program This is JSON's first-class type despite it's ugliness as
+   * otherwise it's impossible to use enum values in an even remotely clean
+   * manner
+   * @see settings::answer_types
+   * @see settings::compare
+   * @see settings::loader::get_settings, this is where this is employed
+   */
   //<editor-fold desc="Settings Requesting">
-  // This is JSON's first-class type despite it's ugliness as otherwise it's
-  // impossible to use enum values in an even remotely clean manner
   json settings_guide = {
       //<editor-fold desc="log_file_type">
       {{"identifier", "log_file_type"},
@@ -260,27 +333,60 @@ struct structure {
 
 class loader {
 public:
-  // The settings the user chose
+  /**
+   * @brief The settings the user chose
+   */
   structure settings;
-  // Whether the settings were verified
+  /**
+   * @brief Whether the log file was verified
+   */
   [[maybe_unused]] bool log_verified{false};
+  /**
+   * @brief Whether the template file was verified
+   */
   [[maybe_unused]] bool template_verified{false};
 
-  // Constructor - retrieves the user's settings then verifies them
+  /**
+   * @brief Constructor, to load settings from all sources and verify them
+   * @param arg_count The number of arguments
+   * @param arguments The arguments
+   * @see settings::loader::settings
+   */
   explicit loader(int arg_count, char *arguments[]);
 
 private:
+  /**
+   * @brief Checks the arguments for settings, and returns them
+   * @param arg_count The number of arguments
+   * @param arguments The arguments
+   * @return A tuple containing whether all defaults should be used, and the
+   * settings from the arguments
+   */
   [[nodiscard]] static std::tuple<bool, json>
   check_arguments(int arg_count, char *arguments[]);
 
-  // Method to get the user's settings
+  /**
+   * @brief Builds the defaults from program or save file, skips argument-given
+   * settings, then asks the user for the rest
+   * @param settings_from_arguments The settings provided by the save value,
+   * from settings::structure::load_settings()
+   * @return The user's settings structure
+   */
   [[nodiscard]] static structure
   get_settings(const json &settings_from_arguments);
 
-  // Method to verify the log file
+  /**
+   * @brief Checks if the log file is valid
+   * @return Whether the log file is valid
+   * @todo Switch to using log_sources verification
+   */
   [[nodiscard]] bool verify_log_file() const;
 
-  // Method to verify the template file
+  /**
+   * @brief Checks if the template file is valid
+   * @return Whether the template file is valid
+   * @todo Implement templating and do deeper verification
+   */
   [[nodiscard]] bool verify_template_file() const;
 };
 } // namespace settings
