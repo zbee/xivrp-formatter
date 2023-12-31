@@ -31,9 +31,10 @@ enum answer_types {
   hex_color = 0,
   yesno = 1,
   path = 2,
+  string = 3,
 };
 
-enum answer { no = 0, yes = 1 };
+enum answer { no = -2, yes = -1 };
 
 struct question {
 public:
@@ -107,16 +108,6 @@ public:
 
   // Map of answers received
   std::map<std::string, std::pair<bool, std::string>> answers;
-
-private:
-  // The collected asking guide
-  json ask_guide;
-
-  // The collected defaults
-  std::map<std::string, std::pair<default_source, std::string>> defaults;
-
-  // Load the questions
-  std::list<question> questions;
 };
 
 } // namespace settings

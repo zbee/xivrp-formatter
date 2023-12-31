@@ -7,9 +7,9 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(XIVRP-Formatter main.cpp
         includes/json.hpp
         includes/date.h
+        includes/base64.hpp
         #includes/NLTemplate.cpp
         #includes/NLTemplate.h
-        includes/base64.hpp
 
         common/utilities.cpp
         common/utilities.h

@@ -3,6 +3,7 @@
 
 #include "utilities.h"
 #include "../includes/date.h"
+#include "../settings/ask.h"
 #include <filesystem>
 #include <regex>
 
@@ -31,28 +32,12 @@ std::string common::utilities::get_real_path(std::string &path) {
 }
 
 bool common::utilities::check_file_exists(std::string file) {
-  // Check if the file is a default
-  if (file == "d" || file == "ad")
-    return true;
-
-  // Check if the file is empty
-  if (file.empty())
-    return false;
-
   // Check the file exists, or any variations of it
   return !common::utilities::get_real_path(file).empty();
 }
 
 bool common::utilities::check_file_format(const std::string &file,
                                           const std::string &format) {
-  // Check if the file is a default
-  if (file == "d" || file == "ad")
-    return true;
-
-  // Check if the file is empty
-  if (file.empty())
-    return false;
-
   // Check if the file name is shorter than the required format
   if (file.length() < format.length())
     return false;

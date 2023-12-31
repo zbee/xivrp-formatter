@@ -4,6 +4,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "../common/utilities.h"
 #include "../includes/json.hpp"
 #include "ask.h"
 #include <string>
@@ -37,19 +38,19 @@ enum images_location {
   screenshots = 4, // Look for screenshots
 };
 
-// TODO: Make this a map, or at least include a map to reduce where the list of
-//  settings has to be maintained
 struct structure {
+  std::string settings_file_path{"settings.json"};
+
   //<editor-fold desc="Actual Settings">
   // The message log to use
-  std::string log_file_path{"../examples/ChatLogs.json"};
+  std::string log_file_path{"ChatLogs.json"};
   // TODO: Pass in WorkingDirectory so this works in debug or from the binary
   // The type of log file
   log_type log_file_type{log_type::smartFind};
   // The template file to use
-  std::string template_file_path{"../template.html"};
+  std::string template_file_path{"template.html"};
   // The file to output to
-  std::string output_file_path{"../formatted_writing.html"};
+  std::string output_file_path{"formatted_writing.html"};
 
   // Whether OOC messages should be removed
   bool remove_out_of_character{true};
@@ -83,32 +84,33 @@ struct structure {
   json working_json;
   //</editor-fold>
 
-  // Map of settings
-  std::map<std::string, std::any> settings = {
+  //<editor-fold desc="Map of Settings">
+  std::map<std::string, std::string> settings = {
       {"log_file_path", log_file_path},
-      {"log_file_type", log_file_type},
-      {"template_file_path", template_file_path},
+      {"log_file_type", std::to_string(log_file_type)},
+      {"template_file_path",
+       common::utilities::get_real_path(template_file_path)},
       {"output_file_path", output_file_path},
-      {"remove_out_of_character", remove_out_of_character},
-      {"highlight_emphatics", highlight_emphatics},
+      {"remove_out_of_character", remove_out_of_character ? "yes" : "no"},
+      {"highlight_emphatics", highlight_emphatics ? "yes" : "no"},
       {"emphatic_highlight_color", emphatic_highlight_color},
-      {"combine_messages", combine_messages},
-      {"combine_logs", combine_logs},
-      {"find_related_images", find_related_images},
-      {"related_images_location", related_images_location},
-      {"want_timestamps", want_timestamps},
-      {"squash_time_gaps", squash_time_gaps},
-      {"debug", debug},
+      {"combine_messages", combine_messages ? "yes" : "no"},
+      {"combine_logs", combine_logs ? "yes" : "no"},
+      {"find_related_images", find_related_images ? "yes" : "no"},
+      {"related_images_location", std::to_string(related_images_location)},
+      {"want_timestamps", want_timestamps ? "yes" : "no"},
+      {"squash_time_gaps", squash_time_gaps ? "yes" : "no"},
+      {"debug", debug ? "yes" : "no"},
   };
+  //</editor-fold>
 
   // Method to get the default value for a setting
-  [[nodiscard]] std::tuple<bool, std::string> get_default(std::string setting);
-
-  // Method to get a setting's current value
-  [[nodiscard]] std::any get_setting(std::string setting);
+  [[nodiscard]] static std::tuple<settings::default_source, std::string>
+  get_default(const std::string &setting);
 
   // Method to set a setting
-  void set_setting(std::string setting, std::any value);
+  bool set_setting(const std::string &setting, const std::string &value,
+                   bool skip_json_save = false);
 
   // Method to load the settings from a file
   json load_settings();
@@ -158,7 +160,7 @@ struct structure {
       //</editor-fold>
       //<editor-fold desc="log_file_path">
       {{"identifier", "log_file_path"},
-       {"question", "Where is the log file?"},
+       {"question", "Where is the log file located?"},
        {"wants", answer_types::path},
        {"requires",
         {
@@ -178,7 +180,7 @@ struct structure {
        {"wants", answer_types::path}},
       {{"identifier", "output_file_path"},
        {"question", "Where should the output file be saved?"},
-       {"wants", answer_types::path}},
+       {"wants", answer_types::string}},
       {{"identifier", "remove_out_of_character"},
        {"question", "Should out of character messages be removed?"},
        {"wants", answer_types::yesno}},
@@ -261,17 +263,19 @@ public:
   // The settings the user chose
   structure settings;
   // Whether the settings were verified
-  bool log_verified{false};
-  bool template_verified{false};
+  [[maybe_unused]] bool log_verified{false};
+  [[maybe_unused]] bool template_verified{false};
 
   // Constructor - retrieves the user's settings then verifies them
   explicit loader(int arg_count, char *arguments[]);
 
 private:
-  std::tuple<bool, json> check_arguments(int arg_count, char *arguments[]);
+  [[nodiscard]] static std::tuple<bool, json>
+  check_arguments(int arg_count, char *arguments[]);
 
   // Method to get the user's settings
-  structure get_settings(const json &settings_from_arguments);
+  [[nodiscard]] static structure
+  get_settings(const json &settings_from_arguments);
 
   // Method to verify the log file
   [[nodiscard]] bool verify_log_file() const;
