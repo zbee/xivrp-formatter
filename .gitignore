@@ -1,5 +1,5 @@
 *build*/
 *.png*
-ChatLogs.json
+*.json
 formatted_writing.html
-settings.json
+includes/*
