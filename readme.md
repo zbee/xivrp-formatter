@@ -108,7 +108,17 @@ The following log types are planned for future support:
 I don't know, sorry; this is my first c++ project, after building the core of this for a class
 project after wanting a tool like this for some time and then continuing on with the project.
 
-> Theoretically, it should just be good to go as-is in c++20 with cmake on Windows 10.
+You will need to include the following libraries in the `includes/` folder:
+
+- [base64.hpp](https://raw.githubusercontent.com/heifner/base64/master/base64.hpp)
+- [date.h from include/date/](https://github.com/HowardHinnant/date/archive/refs/tags/v3.0.1.zip)
+- [json.hpp](https://github.com/nlohmann/json/releases/download/v3.11.3/json.hpp)
+- [NLTemplate.cpp and NLTemplate.h from NLTemplate/](https://www.catnapgames.com/wp-content/uploads/2013/04/NLTemplate.zip)
+
+<!-- TODO: Include these in cmake -->
+
+> But then, theoretically, it should just be good to go as-is in c++20 with cmake on
+> Windows 10.
 
 That said: It was built in CLion with CMake, an included MinGW toolchain, on Windows 10. This
 information, along with the `.idea/` folder - which includes the run and build configs - should
